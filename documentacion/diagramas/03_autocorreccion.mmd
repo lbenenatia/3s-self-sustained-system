@@ -1,0 +1,17 @@
+---
+title: 3S · Autocorrección por campeón y retador
+---
+stateDiagram-v2
+    [*] --> PromedioReciente: arranque<br/>(la referencia más simple)
+    PromedioReciente --> Evaluando: llega una corrida nueva
+    Evaluando --> Promover: IC 90% de la mejora > 0<br/>y top 10 no cae más de 2 pts
+    Evaluando --> Mantener: mejora no segura
+    Promover --> CampeonNuevo
+    Mantener --> CampeonActual
+    CampeonNuevo --> Evaluando: próxima corrida
+    CampeonActual --> Evaluando: próxima corrida
+    note right of Evaluando
+        Todos los retadores se evalúan
+        contra el campeón vigente con
+        backtest + bootstrap por períodos
+    end note

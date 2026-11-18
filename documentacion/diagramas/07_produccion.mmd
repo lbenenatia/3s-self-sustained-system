@@ -1,0 +1,29 @@
+---
+title: 3S · Producción en GitHub Actions (sin costo)
+---
+flowchart TB
+    subgraph GH["GitHub (repositorio público)"]
+        SEM["Workflow semanal<br/>lunes 03:17 Uruguay"]
+        LAT["Workflow latido<br/>diario"]
+        PRU["Workflow pruebas<br/>en cada pull request"]
+        SEC["Secretos de Actions<br/>TELEGRAM_TOKEN · TELEGRAM_CHAT_ID"]
+        REG[("registro_predicciones/<br/>state/ (commits fechados)")]
+    end
+    subgraph EXT["Fuentes públicas (lista blanca sellada)"]
+        F[("MI · SUR · INE · Open-Meteo")]
+    end
+    subgraph CICLO["Ciclo de cada corrida"]
+        direction LR
+        G{{"Guardas"}}:::guarda --> D["Descargas +<br/>contratos de datos"] --> M["Modelos +<br/>campeón/retador"] --> P["Predicciones<br/>registradas antes"] --> E["Calificación de<br/>predicciones pasadas"]
+    end
+    TG["Telegram<br/>resumen · fallas · latido"]
+    H(["Personas<br/>sellar · apagar · aprobar PR"]):::humano
+    SEM --> CICLO
+    F --> D
+    CICLO --> REG
+    SEC -.-> TG
+    CICLO --> TG --> H
+    LAT --> TG
+    H == aprueba PR ==> PRU ==> SEM
+    classDef guarda fill:#fde2e2,stroke:#c0392b,color:#000
+    classDef humano fill:#e3f2fd,stroke:#1565c0,color:#000

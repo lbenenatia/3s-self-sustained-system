@@ -1,0 +1,22 @@
+---
+title: 3S · Fase 3 — fuentes que se actualizan solas
+---
+flowchart LR
+    subgraph RED["Internet (solo dominios sellados, solo https)"]
+        MI[("catalogodatos.gub.uy<br/>denuncias del MI")]
+        SUR[("ckan-data.montevideo.gub.uy<br/>reclamos SUR con coordenadas")]
+        INE[("www5.ine.gub.uy<br/>límites de 62 barrios")]
+        OM[("archive-api.open-meteo.com<br/>clima diario")]
+    end
+    G{{"Guardas<br/>verificar_url()"}}:::guarda
+    D["Descargas<br/>archivo temporal → validar → reemplazar"]
+    C[("Última copia buena<br/>data/fuentes")]
+    X["Cruce espacial<br/>reclamo → barrio"]
+    S["Señales nuevas<br/>alumbrado · limpieza · convivencia ·<br/>espacios públicos · calles · lluvia · temperatura"]
+    R{"Campeón vs retadores"}
+    MI & SUR & INE & OM --> G --> D
+    D -- ok --> C
+    D -- falla: se sigue con la anterior --> C
+    C --> X --> S --> R
+    C --> S
+    classDef guarda fill:#fde2e2,stroke:#c0392b,color:#000

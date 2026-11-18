@@ -7,6 +7,8 @@ y registra sus predicciones **antes** de que se conozcan los resultados, para qu
 > Módulo actual: **rapiñas por barrio en Montevideo**, con datos abiertos del Ministerio del Interior,
 > la Intendencia de Montevideo, el INE y Open-Meteo.
 
+📚 **Documentación completa:** [documentacion/](documentacion/), con decisiones de diseño, arquitectura con diagramas, operación y cómo colaborar.
+
 ## Qué hace
 1. **Descarga** las fuentes oficiales y las valida con contratos de datos. Si una fuente cambia un nombre de columna conocido, se adapta sola. Si no puede, avisa y sigue con la última copia buena.
 2. **Construye señales por barrio:** historia de rapiñas, calendario uruguayo y horas de oscuridad, otros delitos, reclamos a la Intendencia (alumbrado, limpieza, áreas verdes…) y clima.

@@ -1,0 +1,44 @@
+---
+title: 3S · Arquitectura del Módulo Seguridad (Fase 2)
+---
+flowchart TB
+    subgraph EXT["Fuentes de datos"]
+        direction LR
+        MI[("Ministerio del Interior<br/>denuncias · trimestral")]
+        CAL["Calendario UY y luz solar<br/>(calculado, sin internet)"]
+        CLI[("Clima diario<br/>opcional")]
+        FUT[("Futuro: convenio,<br/>iluminación, noticias")]:::futuro
+    end
+
+    subgraph NUCLEO["Núcleo autónomo de 3S"]
+        direction LR
+        G{{"Guardas<br/>apagado · integridad · sin datos personales · sin gasto"}}:::guarda
+        ING["Ingesta +<br/>control de calidad"]
+        SEN["Señales por barrio<br/>historia · calendario · otros delitos · escalada · clima"]
+        BT["Backtest con<br/>origen móvil"]
+        PROM{"¿El retador mejora<br/>de forma segura?"}
+        REG[("Registro de modelos<br/>campeón + historial")]
+        PRED["Predicción del<br/>próximo período"]
+        INF["Informe + bitácora"]
+    end
+
+    subgraph SAL["Salidas"]
+        direction LR
+        DASH["Dashboard"]
+    end
+
+    HUM(["Humanos<br/>sellar reglas · apagar · aprobar gasto"]):::humano
+
+    MI --> ING
+    CAL --> SEN
+    CLI -.-> SEN
+    FUT -.-> ING
+    G --> ING --> SEN --> BT --> PROM
+    PROM -- sí --> REG
+    PROM -- no: se mantiene --> REG
+    REG --> PRED --> INF --> DASH
+    HUM == controla ==> G
+
+    classDef guarda fill:#fde2e2,stroke:#c0392b,color:#000
+    classDef humano fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef futuro stroke-dasharray: 5 5,color:#666

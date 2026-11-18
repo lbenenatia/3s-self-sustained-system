@@ -1,0 +1,36 @@
+---
+title: 3S · Una corrida autónoma (python run.py)
+---
+sequenceDiagram
+    autonumber
+    actor H as Humano
+    participant R as run.py
+    participant G as Guardas
+    participant I as Ingesta
+    participant M as Modelos
+    participant RG as Registro
+    participant S as Salidas
+
+    H->>R: dispara (a mano o tarea programada)
+    R->>G: verificar()
+    alt existe state/STOP o las reglas cambiaron
+        G-->>R: Detener
+        R->>S: bitácora "detenido" y no hace nada más
+    else todo en orden
+        G-->>R: OK
+        R->>I: ¿hay un CSV nuevo?
+        I->>I: control de calidad (filas, fechas, atraso)
+        alt falla el control
+            I-->>R: Detener (el campeón anterior sigue vigente)
+        else datos válidos
+            I-->>R: datos limpios
+            loop por escenario (semanal, trimestral)
+                R->>M: armar señales y backtest de todos los retadores
+                M-->>R: métricas + intervalos de confianza
+                R->>RG: decidir campeón (regla campeón/retador)
+                RG-->>R: campeón y motivo
+                R->>M: entrenar campeón y predecir próximo período
+            end
+            R->>S: informe.md, predicciones, bitácora
+        end
+    end

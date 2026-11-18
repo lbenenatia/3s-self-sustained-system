@@ -1,0 +1,19 @@
+---
+title: 3S · De la denuncia a la señal
+---
+flowchart TB
+    CSV["otros-delitos-2.csv<br/>2,55 M denuncias · 2013–2026<br/>(un evento por fila, sin datos personales)"]
+    PQ["denuncias.parquet<br/>limpio y tipado"]
+    AGG["Conteos por barrio y período<br/>rapiña · hurto · lesiones · violencia doméstica"]
+    PAN["Panel barrio × período<br/>62 barrios × semanas o trimestres"]
+    F1["historia del barrio"]
+    F2["calendario y oscuridad"]
+    F3["otros delitos recientes"]
+    F4["escalada"]
+    F5["clima (opcional)"]
+    NO["Prohibido: edad, sexo, nacionalidad,<br/>antecedentes, identificadores"]:::prohibido
+
+    CSV --> PQ --> AGG --> PAN
+    PAN --> F1 & F2 & F3 & F4 & F5
+    NO -. bloqueado por guardas .-x PAN
+    classDef prohibido fill:#fde2e2,stroke:#c0392b,color:#000
