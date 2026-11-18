@@ -22,33 +22,61 @@ def _estado():
     return json.loads(ESTADO.read_text()) if ESTADO.exists() else {}
 
 
-INTENTOS = 3
-ESPERA_S = 30
+INTENTOS = 8
+ESPERA_S = 20
+
+
+class Cortada(IOError):
+    """El servidor cerró la conexión antes de mandar el archivo completo."""
 
 
 def _bajar(url, destino: Path, minimo_mb: float):
-    """Descarga con reintentos: los servidores oficiales a veces se cuelgan a mitad de un archivo grande."""
-    for intento in range(1, INTENTOS + 1):
-        try:
-            return _bajar_una_vez(url, destino, minimo_mb)
-        except guardas.Detener:
-            raise
-        except ValueError:
-            raise  # el archivo llegó pero es inválido: reintentar no ayuda
-        except Exception:
-            if intento == INTENTOS:
-                raise
-            time.sleep(ESPERA_S * intento)
+    """Descarga con reintentos y reanudación.
 
-
-def _bajar_una_vez(url, destino: Path, minimo_mb: float):
-    guardas.verificar_url(url)
+    Los servidores oficiales a veces se cuelgan o cortan la conexión a mitad de un archivo grande.
+    Cada reintento continúa desde el último byte recibido (HTTP Range) si el servidor lo permite.
+    """
     tmp = destino.with_suffix(destino.suffix + ".parcial")
     destino.parent.mkdir(parents=True, exist_ok=True)
-    req = urllib.request.Request(url, headers={"User-Agent": AGENTE})
-    with urllib.request.urlopen(req, timeout=300) as r, open(tmp, "wb") as f:
+    tmp.unlink(missing_ok=True)  # nunca se reanuda un parcial de otra corrida: podría ser otra versión
+    for intento in range(1, INTENTOS + 1):
+        try:
+            _bajar_tramo(url, tmp)
+            break
+        except guardas.Detener:
+            raise
+        except Exception:
+            if intento == INTENTOS:
+                tmp.unlink(missing_ok=True)
+                raise
+            time.sleep(min(ESPERA_S * intento, 120))
+    return _validar(tmp, destino, minimo_mb)
+
+
+def _bajar_tramo(url, tmp: Path):
+    """Baja (o continúa bajando) el archivo en `tmp`. Lanza Cortada si llegó incompleto."""
+    guardas.verificar_url(url)
+    ya = tmp.stat().st_size if tmp.exists() else 0
+    headers = {"User-Agent": AGENTE}
+    if ya:
+        headers["Range"] = f"bytes={ya}-"
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=300) as r:
         guardas.verificar_url(r.geturl())  # también la URL final, por si hubo redirección
-        shutil.copyfileobj(r, f, length=1 << 20)
+        if ya and r.status == 206:
+            modo = "ab"
+            total = int(r.headers.get("Content-Range", "/0").rsplit("/", 1)[-1] or 0)
+        else:  # primer tramo, o el servidor ignoró el Range: se empieza de cero
+            modo, ya = "wb", 0
+            total = int(r.headers.get("Content-Length") or 0)
+        with open(tmp, modo) as f:
+            shutil.copyfileobj(r, f, length=1 << 20)
+    recibido = tmp.stat().st_size
+    if total and recibido < total:
+        raise Cortada(f"conexión cortada: {recibido / 1e6:.1f} de {total / 1e6:.1f} MB")
+
+
+def _validar(tmp: Path, destino: Path, minimo_mb: float):
     mb = tmp.stat().st_size / 1e6
     inicio = tmp.open("rb").read(200).lower()
     if mb < minimo_mb:
