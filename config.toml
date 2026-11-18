@@ -1,0 +1,67 @@
+# 3S – Módulo Seguridad · configuración
+
+[datos]
+csv_denuncias = "data/fuentes/otros-delitos-2.csv"   # lo descarga 3S; si no hay red, usa el último que tenga
+# csv_respaldo = "ruta/a/una/copia/manual.csv"       # opcional, por si la descarga falla
+parquet = "data/denuncias.parquet"
+max_dias_desactualizado = 200
+
+[descargas]
+# Cada fuente se descarga como máximo una vez cada `cada_dias` días.
+[descargas.denuncias_mi]
+url = "https://catalogodatos.gub.uy/dataset/999f2edc-5ef5-4d41-bed7-824a5635ea8d/resource/4d76b716-a06a-45dd-ba1c-01fc6d88ee99/download/otros-delitos-2.csv"
+destino = "data/fuentes/otros-delitos-2.csv"
+tamano_minimo_mb = 200
+cada_dias = 7
+
+[descargas.reclamos_sur]
+url = "https://ckan-data.montevideo.gub.uy/dataset/c34e11ea-c547-46d5-80c6-d0bf283c002f/resource/ccb644b1-79b0-4caa-a353-6cfa816f3f70/download/reclamos.zip"
+destino = "data/fuentes/reclamos_sur.zip"
+tamano_minimo_mb = 5
+cada_dias = 7
+
+[descargas.barrios_ine]
+url = "https://www5.ine.gub.uy/documents/Cartograf%C3%ADa/Vectoriales/2011/mapas%20vectoriales%202011.zip"
+destino = "data/fuentes/mapas_vectoriales_2011.zip"
+tamano_minimo_mb = 1
+cada_dias = 365
+
+[descargas.clima]
+# Open-Meteo (gratis, sin clave): lluvia y temperatura diarias en Montevideo
+url = "https://archive-api.open-meteo.com/v1/archive?latitude=-34.88&longitude=-56.17&start_date=2013-01-01&end_date={ayer}&daily=precipitation_sum,temperature_2m_max&timezone=America%2FMontevideo"
+destino = "data/fuentes/clima_open_meteo.json"
+tamano_minimo_mb = 0.1
+cada_dias = 7
+
+[territorio]
+# Áreas del SUR (Intendencia) que se convierten en señales por barrio y período
+areas = ["Alumbrado", "Limpieza", "Areas Verdes", "Espacios Publicos", "Calles y veredas"]
+
+[prospectivo]
+# Escenarios cuyas predicciones se registran antes de que existan datos (y luego se califican).
+# Solo el trimestral: el MI publica por trimestre, así que una "predicción semanal" llegaría tarde.
+escenarios = ["trimestral"]
+
+[escenarios.semanal]
+freq = "W-SUN"
+backtest_desde = "2025-01-01"
+reentrenar_cada = 4
+
+[escenarios.trimestral]
+freq = "QE"
+backtest_desde = "2019-01-01"
+reentrenar_cada = 1
+
+[promocion]
+campeon_inicial = "base_corta"
+max_perdida_top10_pts = 2.0
+bootstrap_n = 2000
+
+# ---- Sección sellada: cambiarla requiere aprobación humana (python run.py --sellar) ----
+[seguridad]
+solo_datos_agregados = true
+permite_gasto = false
+permite_red = true
+dominios_permitidos = ["catalogodatos.gub.uy", "ckan-data.montevideo.gub.uy", "www5.ine.gub.uy", "archive-api.open-meteo.com", "api.telegram.org"]
+permite_modificar_codigo = false
+unidad_minima = "barrio"

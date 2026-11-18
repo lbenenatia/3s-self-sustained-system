@@ -1,0 +1,50 @@
+# 3S · corrida semanal en producción (gratis en repositorios públicos)
+name: 3S semanal
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"     # lunes 06:17 UTC = 03:17 en Uruguay
+  workflow_dispatch:          # botón "Run workflow" para correrlo a mano
+
+permissions:
+  contents: write             # para guardar el registro de predicciones en el repo
+
+concurrency:
+  group: 3s-produccion
+  cancel-in-progress: false
+
+jobs:
+  correr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Correr 3S
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python run.py
+
+      - name: Pruebas posteriores
+        run: |
+          python tests/test_prospectivo.py
+          python tests/test_territorio.py
+
+      - name: Guardar registro en el repositorio
+        if: always()
+        run: |
+          git config user.name "3S bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registro_predicciones state/registro.json state/corridas
+          git add state/ultima_ok.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "3S: corrida semanal $(date -u +%F)"
+          git push

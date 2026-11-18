@@ -1,0 +1,420 @@
+{
+ "estado": "ok",
+ "bitacora": [
+  {
+   "etapa": "guardas",
+   "hora": "2026-11-18T20:30:19+00:00",
+   "ok": true
+  },
+  {
+   "etapa": "descarga_fallida",
+   "hora": "2026-11-18T20:30:20+00:00",
+   "fuente": "denuncias_mi",
+   "detalle": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+   "usa_copia_anterior": true
+  },
+  {
+   "etapa": "descarga_fallida",
+   "hora": "2026-11-18T20:30:20+00:00",
+   "fuente": "reclamos_sur",
+   "detalle": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+   "usa_copia_anterior": true
+  },
+  {
+   "etapa": "descarga_fallida",
+   "hora": "2026-11-18T20:30:20+00:00",
+   "fuente": "barrios_ine",
+   "detalle": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+   "usa_copia_anterior": true
+  },
+  {
+   "etapa": "descarga_fallida",
+   "hora": "2026-11-18T20:30:20+00:00",
+   "fuente": "clima",
+   "detalle": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+   "usa_copia_anterior": true
+  },
+  {
+   "etapa": "ingesta",
+   "hora": "2026-11-18T20:30:27+00:00",
+   "nuevo": true,
+   "filas": 2552910,
+   "hasta": "2026-09-30"
+  },
+  {
+   "etapa": "territorio_barrios",
+   "hora": "2026-11-18T20:30:28+00:00",
+   "capa": "ine_barrios_mvd_nbi85.shp",
+   "poligonos": 62,
+   "emparejados": 62,
+   "sin_par": []
+  },
+  {
+   "etapa": "territorio_reclamos",
+   "hora": "2026-11-18T20:30:41+00:00",
+   "leidos": 1364977,
+   "ubicados": 1364966,
+   "coordenadas": "EPSG:4326",
+   "desde": "2010-01-04"
+  },
+  {
+   "etapa": "territorio",
+   "hora": "2026-11-18T20:30:42+00:00",
+   "disponible": true,
+   "filas": 492340
+  },
+  {
+   "etapa": "diagnostico_semanal",
+   "hora": "2026-11-18T20:32:15+00:00",
+   "piso_azar": 1.537,
+   "margen_mejorable": 0.126
+  },
+  {
+   "etapa": "promocion_semanal",
+   "hora": "2026-11-18T20:32:15+00:00",
+   "campeon_anterior": "clima",
+   "campeon": "clima",
+   "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón"
+  },
+  {
+   "etapa": "escenario_semanal",
+   "hora": "2026-11-18T20:32:17+00:00",
+   "segundos": 96,
+   "periodo_predicho": "2026-10-04"
+  },
+  {
+   "etapa": "diagnostico_trimestral",
+   "hora": "2026-11-18T20:33:22+00:00",
+   "piso_azar": 6.595,
+   "margen_mejorable": 0.601
+  },
+  {
+   "etapa": "promocion_trimestral",
+   "hora": "2026-11-18T20:33:22+00:00",
+   "campeon_anterior": "base_corta",
+   "campeon": "base_corta",
+   "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón"
+  },
+  {
+   "etapa": "prediccion_registrada",
+   "hora": "2026-11-18T20:33:23+00:00",
+   "escenario": "trimestral",
+   "archivo": "registro_predicciones/trimestral/2026-12-31.csv"
+  },
+  {
+   "etapa": "escenario_trimestral",
+   "hora": "2026-11-18T20:33:23+00:00",
+   "segundos": 65,
+   "periodo_predicho": "2026-12-31"
+  },
+  {
+   "etapa": "informe",
+   "hora": "2026-11-18T20:33:23+00:00",
+   "archivo": "outputs/informe.md"
+  }
+ ],
+ "resultados": {
+  "semanal": {
+   "metricas": {
+    "base_corta": {
+     "error_medio": 1.7934,
+     "acierto_top10": 0.5604
+    },
+    "base_estacional": {
+     "error_medio": 2.558,
+     "acierto_top10": 0.3934
+    },
+    "base": {
+     "error_medio": 1.7707,
+     "acierto_top10": 0.5549
+    },
+    "calendario": {
+     "error_medio": 1.7709,
+     "acierto_top10": 0.5615
+    },
+    "otros": {
+     "error_medio": 1.7735,
+     "acierto_top10": 0.5626
+    },
+    "escalada": {
+     "error_medio": 1.7751,
+     "acierto_top10": 0.556
+    },
+    "territorio": {
+     "error_medio": 1.7628,
+     "acierto_top10": 0.5615
+    },
+    "clima": {
+     "error_medio": 1.76,
+     "acierto_top10": 0.5714
+    }
+   },
+   "intervalos": {
+    "base_corta": [
+     -0.025343427123954498,
+     -0.01276409766958302
+    ],
+    "base_estacional": [
+     -0.4833196616980714,
+     -0.4249046049800659
+    ],
+    "base": [
+     -0.011684387749212943,
+     -0.00017778053151809058
+    ],
+    "calendario": [
+     -0.009496506137494675,
+     -0.0029441648340864605
+    ],
+    "otros": [
+     -0.010866565491033153,
+     -0.004498107852168554
+    ],
+    "escalada": [
+     -0.012041065322573884,
+     -0.005314396759214082
+    ],
+    "territorio": [
+     -0.003711289315398414,
+     0.0005793994036539129
+    ]
+   },
+   "campeon": "clima",
+   "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón",
+   "periodo_predicho": "2026-10-04",
+   "prediccion": [
+    {
+     "barrio": "CASAVALLE",
+     "esperado": 14.135126578168816,
+     "promedio_reciente": 13.25
+    },
+    {
+     "barrio": "PEÑAROL, LAVALLEJA",
+     "esperado": 10.758046833474655,
+     "promedio_reciente": 10.25
+    },
+    {
+     "barrio": "UNION",
+     "esperado": 9.734895268513364,
+     "promedio_reciente": 10.125
+    },
+    {
+     "barrio": "MALVIN NORTE",
+     "esperado": 9.239479893930776,
+     "promedio_reciente": 10.625
+    },
+    {
+     "barrio": "NUEVO PARIS",
+     "esperado": 9.234217299216033,
+     "promedio_reciente": 8.0
+    },
+    {
+     "barrio": "LA PALOMA, TOMKINSON",
+     "esperado": 8.708520794325848,
+     "promedio_reciente": 8.875
+    },
+    {
+     "barrio": "COLON CENTRO Y NOROESTE",
+     "esperado": 8.65706486501441,
+     "promedio_reciente": 7.625
+    },
+    {
+     "barrio": "MANGA, TOLEDO CHICO",
+     "esperado": 8.404212546646212,
+     "promedio_reciente": 8.5
+    },
+    {
+     "barrio": "PASO DE LA ARENA",
+     "esperado": 7.847615556247579,
+     "promedio_reciente": 9.0
+    },
+    {
+     "barrio": "PTA. RIELES, BELLA ITALIA",
+     "esperado": 7.007194908760577,
+     "promedio_reciente": 10.125
+    },
+    {
+     "barrio": "BELVEDERE",
+     "esperado": 6.2815197400938905,
+     "promedio_reciente": 6.25
+    },
+    {
+     "barrio": "PIEDRAS BLANCAS",
+     "esperado": 6.055085980883077,
+     "promedio_reciente": 4.625
+    },
+    {
+     "barrio": "CONCILIACION",
+     "esperado": 6.000265351339095,
+     "promedio_reciente": 5.0
+    },
+    {
+     "barrio": "CERRO",
+     "esperado": 5.900822342760751,
+     "promedio_reciente": 7.125
+    },
+    {
+     "barrio": "MAROÑAS, PARQUE GUARANI",
+     "esperado": 5.87458476077952,
+     "promedio_reciente": 6.0
+    }
+   ],
+   "periodos_evaluados": 91,
+   "piso_azar": 1.537,
+   "margen_mejorable": 0.126,
+   "campeon_anterior": "clima",
+   "registrado": null
+  },
+  "trimestral": {
+   "metricas": {
+    "base_corta": {
+     "error_medio": 16.5246,
+     "acierto_top10": 0.7774
+    },
+    "base_estacional": {
+     "error_medio": 21.2133,
+     "acierto_top10": 0.6903
+    },
+    "base": {
+     "error_medio": 17.3639,
+     "acierto_top10": 0.7613
+    },
+    "calendario": {
+     "error_medio": 16.3729,
+     "acierto_top10": 0.7806
+    },
+    "otros": {
+     "error_medio": 16.6171,
+     "acierto_top10": 0.7613
+    },
+    "escalada": {
+     "error_medio": 16.6021,
+     "acierto_top10": 0.7613
+    },
+    "territorio": {
+     "error_medio": 16.5347,
+     "acierto_top10": 0.7774
+    },
+    "clima": {
+     "error_medio": 16.5319,
+     "acierto_top10": 0.7871
+    }
+   },
+   "intervalos": {
+    "base_estacional": [
+     -0.3547014696310902,
+     -0.21683214779091342
+    ],
+    "base": [
+     -0.08458686854671468,
+     -0.015851838878479796
+    ],
+    "calendario": [
+     -0.03283167519211572,
+     0.053964861650776484
+    ],
+    "otros": [
+     -0.04666051872067486,
+     0.035244152045701756
+    ],
+    "escalada": [
+     -0.04510591123216341,
+     0.035476746589214056
+    ],
+    "territorio": [
+     -0.03744796226800699,
+     0.033631299548439283
+    ],
+    "clima": [
+     -0.044310205175144834,
+     0.04023352415663765
+    ]
+   },
+   "campeon": "base_corta",
+   "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón",
+   "periodo_predicho": "2026-12-31",
+   "prediccion": [
+    {
+     "barrio": "MALVIN NORTE",
+     "esperado": 135.5,
+     "promedio_reciente": 135.5
+    },
+    {
+     "barrio": "PEÑAROL, LAVALLEJA",
+     "esperado": 132.5,
+     "promedio_reciente": 132.5
+    },
+    {
+     "barrio": "CASAVALLE",
+     "esperado": 126.0,
+     "promedio_reciente": 126.0
+    },
+    {
+     "barrio": "COLON CENTRO Y NOROESTE",
+     "esperado": 120.75,
+     "promedio_reciente": 120.75
+    },
+    {
+     "barrio": "UNION",
+     "esperado": 116.0,
+     "promedio_reciente": 116.0
+    },
+    {
+     "barrio": "NUEVO PARIS",
+     "esperado": 105.0,
+     "promedio_reciente": 105.0
+    },
+    {
+     "barrio": "MANGA, TOLEDO CHICO",
+     "esperado": 103.75,
+     "promedio_reciente": 103.75
+    },
+    {
+     "barrio": "LA PALOMA, TOMKINSON",
+     "esperado": 100.75,
+     "promedio_reciente": 100.75
+    },
+    {
+     "barrio": "PASO DE LA ARENA",
+     "esperado": 98.75,
+     "promedio_reciente": 98.75
+    },
+    {
+     "barrio": "PTA. RIELES, BELLA ITALIA",
+     "esperado": 84.75,
+     "promedio_reciente": 84.75
+    },
+    {
+     "barrio": "VILLA GARCIA, MANGA RURAL",
+     "esperado": 84.25,
+     "promedio_reciente": 84.25
+    },
+    {
+     "barrio": "CONCILIACION",
+     "esperado": 78.75,
+     "promedio_reciente": 78.75
+    },
+    {
+     "barrio": "FLOR DE MAROÑAS",
+     "esperado": 78.25,
+     "promedio_reciente": 78.25
+    },
+    {
+     "barrio": "JARDINES DEL HIPODROMO",
+     "esperado": 76.25,
+     "promedio_reciente": 76.25
+    },
+    {
+     "barrio": "MAROÑAS, PARQUE GUARANI",
+     "esperado": 74.75,
+     "promedio_reciente": 74.75
+    }
+   ],
+   "periodos_evaluados": 31,
+   "piso_azar": 6.595,
+   "margen_mejorable": 0.601,
+   "campeon_anterior": "base_corta",
+   "registrado": "registro_predicciones/trimestral/2026-12-31.csv"
+  }
+ }
+}

@@ -1,0 +1,3 @@
+# Mismos saltos de línea en Windows y Linux: el sello de seguridad depende del contenido exacto
+* text=auto eol=lf
+*.png binary

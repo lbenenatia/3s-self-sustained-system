@@ -1,0 +1,29 @@
+# 3S · pruebas de cada cambio propuesto (pull request). Ningún cambio entra a producción sin pasarlas.
+name: 3S pruebas
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Las reglas de seguridad siguen selladas
+        run: python src/s3/guardas.py
+      - name: Descargar y preparar datos
+        run: python run.py --solo-datos
+      - name: Pruebas
+        run: |
+          python tests/test_prospectivo.py
+          python tests/test_territorio.py

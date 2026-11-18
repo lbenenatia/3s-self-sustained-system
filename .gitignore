@@ -1,0 +1,45 @@
+# ===== 3S · lo que NUNCA se sube a este repositorio público =====
+
+# Datos (son abiertos, pero pesados: 3S los vuelve a descargar en cada corrida)
+data/
+*.csv
+!registro_predicciones/**/*.csv
+*.parquet
+*.zip
+*.shp
+*.dbf
+*.shx
+*.prj
+*.xlsx
+
+# Salidas intermedias y bitácoras locales
+outputs/
+state/descargas.json
+state/mapeo_barrios.json
+state/STOP
+
+# Secretos: tokens, claves, variables de entorno
+.env
+.env.*
+*.key
+*.pem
+*token*
+*secret*
+credenciales*
+service-account*.json
+
+# Capa secreta (Fase 9): el diccionario personal vive SOLO en la máquina de los socios
+capa_secreta/
+*secreto*
+diccionario*
+traductor_local*
+
+# Python y editores
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
