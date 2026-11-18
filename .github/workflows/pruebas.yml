@@ -33,5 +33,6 @@ jobs:
         run: python run.py --solo-datos
       - name: Pruebas
         run: |
+          python tests/test_descargas.py
           python tests/test_prospectivo.py
           python tests/test_territorio.py

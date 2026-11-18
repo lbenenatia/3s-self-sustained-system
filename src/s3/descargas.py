@@ -30,6 +30,23 @@ class Cortada(IOError):
     """El servidor cerró la conexión antes de mandar el archivo completo."""
 
 
+class NoSonDatos(ValueError):
+    """El servidor devolvió una página web en lugar del archivo: reintentar no sirve."""
+
+
+def _verificar_completo(tmp: Path, minimo_mb: float):
+    """Detecta cortes que el servidor no avisa (respuestas sin Content-Length).
+
+    Una página de error se rechaza enseguida; un archivo más chico que el mínimo se trata como
+    descarga cortada, así el próximo intento la continúa desde donde quedó.
+    """
+    if tmp.open("rb").read(200).lower().lstrip().startswith((b"<!doctype html", b"<html")):
+        raise NoSonDatos("el servidor devolvió una página web en lugar de datos")
+    mb = tmp.stat().st_size / 1e6
+    if mb < minimo_mb:
+        raise Cortada(f"archivo incompleto ({mb:.2f} MB < {minimo_mb} MB)")
+
+
 def _bajar(url, destino: Path, minimo_mb: float):
     """Descarga con reintentos y reanudación.
 
@@ -42,15 +59,19 @@ def _bajar(url, destino: Path, minimo_mb: float):
     for intento in range(1, INTENTOS + 1):
         try:
             _bajar_tramo(url, tmp)
+            _verificar_completo(tmp, minimo_mb)
             break
-        except guardas.Detener:
+        except (guardas.Detener, NoSonDatos):
+            tmp.unlink(missing_ok=True)
             raise
         except Exception:
             if intento == INTENTOS:
                 tmp.unlink(missing_ok=True)
                 raise
             time.sleep(min(ESPERA_S * intento, 120))
-    return _validar(tmp, destino, minimo_mb)
+    mb = tmp.stat().st_size / 1e6
+    tmp.replace(destino)  # recién ahora, ya validado, reemplaza a la copia anterior
+    return round(mb, 2)
 
 
 def _bajar_tramo(url, tmp: Path):
@@ -74,19 +95,6 @@ def _bajar_tramo(url, tmp: Path):
     recibido = tmp.stat().st_size
     if total and recibido < total:
         raise Cortada(f"conexión cortada: {recibido / 1e6:.1f} de {total / 1e6:.1f} MB")
-
-
-def _validar(tmp: Path, destino: Path, minimo_mb: float):
-    mb = tmp.stat().st_size / 1e6
-    inicio = tmp.open("rb").read(200).lower()
-    if mb < minimo_mb:
-        tmp.unlink()
-        raise ValueError(f"archivo demasiado chico ({mb:.2f} MB < {minimo_mb} MB)")
-    if inicio.lstrip().startswith((b"<!doctype html", b"<html")):
-        tmp.unlink()
-        raise ValueError("el servidor devolvió una página web en lugar de datos")
-    tmp.replace(destino)
-    return round(mb, 2)
 
 
 def actualizar(cfg, log):
