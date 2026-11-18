@@ -22,12 +22,31 @@ def _estado():
     return json.loads(ESTADO.read_text()) if ESTADO.exists() else {}
 
 
+INTENTOS = 3
+ESPERA_S = 30
+
+
 def _bajar(url, destino: Path, minimo_mb: float):
+    """Descarga con reintentos: los servidores oficiales a veces se cuelgan a mitad de un archivo grande."""
+    for intento in range(1, INTENTOS + 1):
+        try:
+            return _bajar_una_vez(url, destino, minimo_mb)
+        except guardas.Detener:
+            raise
+        except ValueError:
+            raise  # el archivo llegó pero es inválido: reintentar no ayuda
+        except Exception:
+            if intento == INTENTOS:
+                raise
+            time.sleep(ESPERA_S * intento)
+
+
+def _bajar_una_vez(url, destino: Path, minimo_mb: float):
     guardas.verificar_url(url)
     tmp = destino.with_suffix(destino.suffix + ".parcial")
     destino.parent.mkdir(parents=True, exist_ok=True)
     req = urllib.request.Request(url, headers={"User-Agent": AGENTE})
-    with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as f:
+    with urllib.request.urlopen(req, timeout=300) as r, open(tmp, "wb") as f:
         guardas.verificar_url(r.geturl())  # también la URL final, por si hubo redirección
         shutil.copyfileobj(r, f, length=1 << 20)
     mb = tmp.stat().st_size / 1e6

@@ -21,6 +21,14 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Las reglas de seguridad siguen selladas
         run: python src/s3/guardas.py
+      - name: Restaurar datos de la última corrida semanal
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data
+            state/descargas.json
+          key: 3s-datos-
+          restore-keys: 3s-datos-
       - name: Descargar y preparar datos
         run: python run.py --solo-datos
       - name: Pruebas

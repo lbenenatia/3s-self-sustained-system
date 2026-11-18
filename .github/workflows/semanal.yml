@@ -28,6 +28,16 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements.txt
 
+      # Última copia buena de las fuentes: si una descarga falla, 3S sigue con la anterior
+      - name: Restaurar datos de la corrida anterior
+        uses: actions/cache@v4
+        with:
+          path: |
+            data
+            state/descargas.json
+          key: 3s-datos-${{ github.run_id }}
+          restore-keys: 3s-datos-
+
       - name: Correr 3S
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
