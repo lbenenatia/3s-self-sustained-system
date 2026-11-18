@@ -12,6 +12,8 @@ permissions:
 jobs:
   latido:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"  # los mensajes de 3S aparecen en vivo en el log
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4

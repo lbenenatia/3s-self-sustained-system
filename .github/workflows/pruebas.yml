@@ -11,6 +11,8 @@ permissions:
 jobs:
   pruebas:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"  # los mensajes de 3S aparecen en vivo en el log
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
@@ -29,6 +31,11 @@ jobs:
             state/descargas.json
           key: 3s-datos-
           restore-keys: 3s-datos-
+      - name: Diagnóstico de conexión al catálogo
+        run: |
+          curl -sS -o /dev/null --max-time 120 \
+            -w "HTTP %{http_code} · %{size_download} bytes · %{time_total}s\n" \
+            "https://catalogodatos.gub.uy/dataset/999f2edc-5ef5-4d41-bed7-824a5635ea8d/resource/4d76b716-a06a-45dd-ba1c-01fc6d88ee99/download/otros-delitos-2.csv" || true
       - name: Descargar y preparar datos
         run: python run.py --solo-datos
       - name: Pruebas
