@@ -1,0 +1,42 @@
+{
+ "estado": "error",
+ "bitacora": [
+  {
+   "etapa": "guardas",
+   "hora": "2026-11-18T22:54:09+00:00",
+   "ok": true
+  },
+  {
+   "etapa": "descarga_fallida",
+   "hora": "2026-11-18T22:57:23+00:00",
+   "fuente": "denuncias_mi",
+   "detalle": "The read operation timed out",
+   "usa_copia_anterior": false
+  },
+  {
+   "etapa": "descarga",
+   "hora": "2026-11-18T22:57:29+00:00",
+   "fuente": "reclamos_sur",
+   "mb": 44.29
+  },
+  {
+   "etapa": "descarga",
+   "hora": "2026-11-18T22:57:34+00:00",
+   "fuente": "barrios_ine",
+   "mb": 44.92
+  },
+  {
+   "etapa": "descarga",
+   "hora": "2026-11-18T22:57:35+00:00",
+   "fuente": "clima",
+   "mb": 0.12
+  },
+  {
+   "etapa": "error",
+   "hora": "2026-11-18T22:57:35+00:00",
+   "tipo": "FileNotFoundError",
+   "detalle": "[Errno 2] No such file or directory: '/home/runner/work/3s-self-sustained-system/3s-self-sustained-system/data/denuncias.parquet'"
+  }
+ ],
+ "resultados": {}
+}
