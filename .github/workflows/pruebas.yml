@@ -1,4 +1,6 @@
 # 3S · pruebas de cada cambio propuesto (pull request). Ningún cambio entra a producción sin pasarlas.
+# No descarga fuentes: el catálogo del MI va a ~200 KB/s desde GitHub (383 MB ≈ 30+ min). Las pruebas
+# usan la copia que deja la corrida semanal; las descargas en sí se prueban con un servidor local.
 name: 3S pruebas
 
 on:
@@ -13,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONUNBUFFERED: "1"  # los mensajes de 3S aparecen en vivo en el log
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,7 +25,10 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Las reglas de seguridad siguen selladas
         run: python src/s3/guardas.py
+      - name: Pruebas de descargas (servidor local, sin internet)
+        run: python tests/test_descargas.py
       - name: Restaurar datos de la última corrida semanal
+        id: datos
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -31,15 +36,16 @@ jobs:
             state/descargas.json
           key: 3s-datos-
           restore-keys: 3s-datos-
-      - name: Diagnóstico de conexión al catálogo
-        run: |
-          curl -sS -o /dev/null --max-time 120 \
-            -w "HTTP %{http_code} · %{size_download} bytes · %{time_total}s\n" \
-            "https://catalogodatos.gub.uy/dataset/999f2edc-5ef5-4d41-bed7-824a5635ea8d/resource/4d76b716-a06a-45dd-ba1c-01fc6d88ee99/download/otros-delitos-2.csv" || true
-      - name: Descargar y preparar datos
+      - name: Sin copia de datos todavía
+        if: steps.datos.outputs.cache-matched-key == ''
+        run: echo "::warning::No hay datos de una corrida semanal en caché. Se saltean las pruebas con datos reales; corré '3S semanal' una vez para generarlos."
+      - name: Preparar datos (con la copia en caché, sin descargar)
+        if: steps.datos.outputs.cache-matched-key != ''
+        env:
+          S3_SIN_DESCARGAS: "1"
         run: python run.py --solo-datos
-      - name: Pruebas
+      - name: Pruebas con datos reales
+        if: steps.datos.outputs.cache-matched-key != ''
         run: |
-          python tests/test_descargas.py
           python tests/test_prospectivo.py
           python tests/test_territorio.py

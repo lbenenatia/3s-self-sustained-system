@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONUNBUFFERED: "1"  # los mensajes de 3S aparecen en vivo en el log
-    timeout-minutes: 60
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +32,7 @@ jobs:
 
       # Última copia buena de las fuentes: si una descarga falla, 3S sigue con la anterior
       - name: Restaurar datos de la corrida anterior
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             data
@@ -45,6 +45,17 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python run.py
+
+      # Se guarda aunque 3S o las pruebas fallen después: bajar las denuncias lleva 30+ min y no se
+      # debe perder. Solo se guarda lo validado (los .parcial se borran si la descarga falla).
+      - name: Guardar datos para la próxima corrida
+        if: always() && hashFiles('data/denuncias.parquet') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data
+            state/descargas.json
+          key: 3s-datos-${{ github.run_id }}
 
       - name: Pruebas posteriores
         run: |

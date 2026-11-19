@@ -22,8 +22,9 @@ def _estado():
     return json.loads(ESTADO.read_text()) if ESTADO.exists() else {}
 
 
-INTENTOS = 8
+INTENTOS_SIN_AVANCE = 5   # intentos seguidos que no suman ni un byte antes de rendirse
 ESPERA_S = 20
+TOPE_S = 100 * 60         # tiempo máximo por archivo: desde GitHub el catálogo del MI va a ~200 KB/s
 
 
 class Cortada(IOError):
@@ -47,7 +48,7 @@ def _verificar_completo(tmp: Path, minimo_mb: float):
         raise Cortada(f"archivo incompleto ({mb:.2f} MB < {minimo_mb} MB)")
 
 
-def _bajar(url, destino: Path, minimo_mb: float):
+def _bajar(url, destino: Path, minimo_mb: float, avisar=lambda etapa, **datos: None):
     """Descarga con reintentos y reanudación.
 
     Los servidores oficiales a veces se cuelgan o cortan la conexión a mitad de un archivo grande.
@@ -56,31 +57,69 @@ def _bajar(url, destino: Path, minimo_mb: float):
     tmp = destino.with_suffix(destino.suffix + ".parcial")
     destino.parent.mkdir(parents=True, exist_ok=True)
     tmp.unlink(missing_ok=True)  # nunca se reanuda un parcial de otra corrida: podría ser otra versión
-    for intento in range(1, INTENTOS + 1):
+    inicio, sin_avance, meta = time.monotonic(), 0, {}
+    while True:
+        antes = tmp.stat().st_size if tmp.exists() else 0
         try:
-            _bajar_tramo(url, tmp)
+            _bajar_tramo(url, tmp, meta)
             _verificar_completo(tmp, minimo_mb)
             break
         except (guardas.Detener, NoSonDatos):
             tmp.unlink(missing_ok=True)
             raise
-        except Exception:
-            if intento == INTENTOS:
+        except Exception as e:
+            # mientras cada intento sume bytes, se sigue: el límite es el tiempo, no la cantidad de cortes
+            despues = tmp.stat().st_size if tmp.exists() else 0
+            sin_avance = 0 if despues > antes else sin_avance + 1
+            if sin_avance >= INTENTOS_SIN_AVANCE or time.monotonic() - inicio > TOPE_S:
                 tmp.unlink(missing_ok=True)
                 raise
-            time.sleep(min(ESPERA_S * intento, 120))
+            avisar("descarga_reanuda", mb=round(despues / 1e6, 1), minutos=round((time.monotonic() - inicio) / 60, 1),
+                   sin_avance=sin_avance, motivo=f"{type(e).__name__}: {e}"[:120])
+            time.sleep(min(ESPERA_S * max(sin_avance, 1), 120))
     mb = tmp.stat().st_size / 1e6
     tmp.replace(destino)  # recién ahora, ya validado, reemplaza a la copia anterior
-    return round(mb, 2)
+    return round(mb, 2), meta
 
 
-def _bajar_tramo(url, tmp: Path):
-    """Baja (o continúa bajando) el archivo en `tmp`. Lanza Cortada si llegó incompleto."""
+def _version(headers):
+    """Lo que identifica la versión publicada de un archivo (para no volver a bajarlo si no cambió)."""
+    v = {"etag": headers.get("ETag"), "modificado": headers.get("Last-Modified")}
+    return {k: x for k, x in v.items() if x}
+
+
+def _sin_cambios(url, previo: dict):
+    """Pregunta al servidor (HEAD, sin bajar nada) si el archivo sigue siendo el mismo que ya tenemos."""
+    if not previo.get("etag") and not previo.get("modificado"):
+        return False
+    guardas.verificar_url(url)
+    req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": AGENTE})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            guardas.verificar_url(r.geturl())
+            actual = _version(r.headers)
+    except guardas.Detener:
+        raise
+    except Exception:
+        return False  # si la consulta falla, se intenta la descarga normal
+    claves = [k for k in ("etag", "modificado") if previo.get(k) and actual.get(k)]
+    return bool(claves) and all(previo[k] == actual[k] for k in claves)
+
+
+def _bajar_tramo(url, tmp: Path, meta: dict | None = None):
+    """Baja (o continúa bajando) el archivo en `tmp`. Lanza Cortada si llegó incompleto.
+    En el primer tramo anota en `meta` la versión publicada (ETag / Last-Modified)."""
     guardas.verificar_url(url)
     ya = tmp.stat().st_size if tmp.exists() else 0
     headers = {"User-Agent": AGENTE}
     if ya:
         headers["Range"] = f"bytes={ya}-"
+        # If-Range: si el archivo publicado cambió desde el primer tramo, el servidor manda la versión
+        # nueva completa (200) en vez del resto de la vieja, así nunca se mezclan dos versiones
+        etag = (meta or {}).get("etag", "")
+        validador = etag if etag and not etag.startswith("W/") else (meta or {}).get("modificado")
+        if validador:
+            headers["If-Range"] = validador
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=300) as r:
         guardas.verificar_url(r.geturl())  # también la URL final, por si hubo redirección
@@ -90,6 +129,9 @@ def _bajar_tramo(url, tmp: Path):
         else:  # primer tramo, o el servidor ignoró el Range: se empieza de cero
             modo, ya = "wb", 0
             total = int(r.headers.get("Content-Length") or 0)
+            if meta is not None:
+                meta.clear()
+                meta.update(_version(r.headers))
         with open(tmp, modo) as f:
             shutil.copyfileobj(r, f, length=1 << 20)
     recibido = tmp.stat().st_size
@@ -108,8 +150,15 @@ def actualizar(cfg, log):
             continue
         url = f["url"].replace("{ayer}", (date.today() - timedelta(days=1)).isoformat())
         try:
-            mb = _bajar(url, destino, f["tamano_minimo_mb"])
-            estado[nombre] = {"ok_en": time.time(), "mb": mb, "url": url}
+            previo = estado.get(nombre, {})
+            if destino.exists() and previo.get("url") == url and _sin_cambios(url, previo):
+                previo["ok_en"] = time.time()
+                previo.pop("ultimo_error", None)
+                res[nombre] = "vigente"
+                log("descarga_sin_cambios", fuente=nombre)
+                continue
+            mb, version = _bajar(url, destino, f["tamano_minimo_mb"], avisar=lambda e, **k: log(e, fuente=nombre, **k))
+            estado[nombre] = {"ok_en": time.time(), "mb": mb, "url": url, **version}
             res[nombre] = "nuevo"
             log("descarga", fuente=nombre, mb=mb)
         except guardas.Detener:
