@@ -3,7 +3,7 @@
 ## Workflows (`.github/workflows/`)
 | Workflow | Cuándo | Qué hace |
 |---|---|---|
-| **3S semanal** | Lunes 03:17 (Uruguay) y a mano con "Run workflow" | Corrida completa, pruebas posteriores y commit del registro y la bitácora |
+| **3S semanal** | Lunes y jueves 03:17 (Uruguay) y a mano con "Run workflow" | Corrida completa, pruebas posteriores y commit del registro y la bitácora |
 | **3S latido** | Todos los días 10:43 | Avisa por Telegram si hace más de 10 días que no hay una corrida exitosa |
 | **3S pruebas** | En cada pull request | Verifica el sello, prepara los datos y corre las pruebas |
 

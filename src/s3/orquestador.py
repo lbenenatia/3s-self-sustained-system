@@ -168,7 +168,8 @@ def resumen_aviso(estado, bitacora, resultados):
         if e in ("detenido", "error", "territorio_error", "contrato_incumplido"):
             lineas.append(f"• {e}: {b.get('motivo') or b.get('detalle')}"[:300])
         elif e == "descarga_fallida":
-            lineas.append(f"• descarga fallida: {b['fuente']} (se usa la copia anterior)")
+            copia = "se usa la copia anterior" if b.get("usa_copia_anterior") else "SIN copia anterior"
+            lineas.append(f"• descarga fallida: {b['fuente']} ({copia}): {b.get('detalle', '')}"[:300])
         elif e == "contrato_adaptado":
             lineas.append(f"• {b['fuente']} cambió columnas y 3S se adaptó: {b['cambios']}")
         elif e == "prediccion_registrada":

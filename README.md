@@ -41,7 +41,7 @@ pip install -r requirements.txt
 python run.py --sellar      # solo un humano, después de revisar las reglas
 python run.py               # ciclo completo (descarga unos 430 MB)
 ```
-En producción corre con GitHub Actions (`.github/workflows/semanal.yml`) todos los lunes a las 03:17 de Uruguay. Hay además un latido diario y pruebas automáticas en cada pull request.
+En producción corre con GitHub Actions (`.github/workflows/semanal.yml`) los lunes y jueves a las 03:17 de Uruguay (si las fuentes no cambiaron, no vuelve a descargarlas). Hay además un latido diario y pruebas automáticas en cada pull request.
 
 ## Fuentes
 - Ministerio del Interior: *Delitos denunciados en el Uruguay* (catalogodatos.gub.uy).
