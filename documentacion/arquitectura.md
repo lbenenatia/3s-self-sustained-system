@@ -16,6 +16,8 @@
 | `modelo.py` | Backtest con origen móvil, métricas, bootstrap y piso del azar |
 | `registro.py` | Campeón y retador: decide si un modelo nuevo reemplaza al vigente |
 | `prospectivo.py` | Registra predicciones a ciegas y las califica cuando llegan los datos |
+| `alertas.py` | Alertas de desvío: línea base por barrio, CUSUM de subas y bajas, picos, umbrales calibrados por simulación y validación histórica |
+| `registro_alertas.py` | Registro público e inmutable de alertas por trimestre, mensaje de Telegram y sección del informe |
 | `avisos.py` | Telegram y latido |
 | `orquestador.py` | Une todo en una corrida |
 
@@ -31,6 +33,9 @@ Cada corrida evalúa a todos los retadores contra el campeón vigente. Para reem
 ![Datos](diagramas/05_datos.png)
 
 ![Fuentes](diagramas/06_fuentes_fase3.png)
+
+## Alertas de desvío
+![Alertas](diagramas/08_alertas.png)
 
 ## Producción
 ![Producción](diagramas/07_produccion.png)

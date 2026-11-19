@@ -47,6 +47,28 @@ Primer modelo de rapiñas por barrio de Montevideo, con autoevaluación honesta 
 - Avisos por Telegram.
 - **Registro prospectivo:** las predicciones se publican antes de que existan los datos reales y se califican cuando llegan. Es la forma de construir evidencia que cualquiera pueda verificar.
 
+### Fase 5 · Alertas de desvío por barrio
+Como el promedio reciente predice bien, lo valioso es lo que **se sale** de él. Cada trimestre que publica el Ministerio, 3S revisa semana por semana rapiñas, hurtos y lesiones de cada barrio y busca:
+- **Picos:** una semana muy improbable.
+- **Subas sostenidas:** varias semanas por encima de lo esperable, detectadas con CUSUM, un método clásico de vigilancia epidemiológica.
+- **Bajas sostenidas:** lo mismo hacia abajo. Sirven para preguntar qué funcionó.
+
+**"Lo esperable"** de un barrio es su participación habitual en los delitos de la ciudad (las 52 semanas previas) multiplicada por el total de la ciudad en cada semana. Así una suba general o la estacionalidad no disparan alertas en todos los barrios: solo salta lo propio del barrio.
+
+**Falsas alarmas:** los umbrales se calibran por simulación con una binomial negativa, para que si nada cambiara hubiera **como máximo una falsa alarma esperada por trimestre en toda la ciudad**. Probado con datos simulados: 0,86 por trimestre.
+
+**Validación con la historia (42 trimestres, 2016–2026):**
+| Tipo | Alertas por trimestre | Siguió desviado el trimestre siguiente |
+|---|---|---|
+| Suba sostenida | 9,2 | **76%** quedó por encima de lo esperable |
+| Baja sostenida | 6,7 | **88%** quedó por debajo |
+| Pico | 2,5 | 73% quedó por encima |
+| *Barrios sin alerta (referencia)* | — | *47% quedó por encima: lo esperable por azar* |
+
+Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas más que la falsa alarma configurada indica que los barrios realmente cambian.
+
+**Límite honesto:** con datos públicos, las alertas llegan cuando el Ministerio publica el trimestre, con unas 3 semanas de atraso. No son en tiempo real; para eso harían falta datos más frecuentes.
+
 ## Resultados actuales (datos al 30/09/2026)
 | Escenario | Mejor método | Error medio | Piso del azar | Margen máximo |
 |---|---|---|---|---|
@@ -54,7 +76,6 @@ Primer modelo de rapiñas por barrio de Montevideo, con autoevaluación honesta 
 | Trimestral, por barrio | Promedio reciente | 16,5 | 6,6 | 60% |
 
 ## Hacia dónde va
-- **Alertas de desvío:** avisar cuándo un barrio se aparta de lo esperable. Aprovecha justamente que el promedio predice bien: lo valioso es lo que se sale de él.
 - **Evaluación de intervenciones:** medir si una política funcionó, comparando con barrios parecidos donde no se aplicó (control sintético, diferencias en diferencias).
 - **Interior del país,** por seccionales.
 - **Automejora acotada:** 3S propone mejoras como pull requests con pruebas. Nunca se fusionan solos.

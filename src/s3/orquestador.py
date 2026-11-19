@@ -18,6 +18,7 @@ import guardas
 import ingest as ing
 import prospectivo
 import registro
+import registro_alertas
 import territorio as terr
 from features import panel, CONJUNTOS
 from ingest import load_denuncias, check_quality
@@ -130,7 +131,7 @@ def correr_escenario(df, nombre, esc, cfg, bitacora, territorio=None):
             "campeon_anterior": campeon, "registrado": str(registrado.relative_to(RAIZ)) if registrado else None}
 
 
-def informe(resultados, bitacora):
+def informe(resultados, bitacora, alertas_res=None):
     nombres = {"base_corta": "Promedio reciente", "base_estacional": "Igual que hace un año",
                "base": "Modelo: historia", "calendario": "Modelo: + calendario y oscuridad",
                "otros": "Modelo: + otros delitos", "escalada": "Modelo: + escalada",
@@ -147,6 +148,7 @@ def informe(resultados, bitacora):
                    f"{r['piso_azar']:.2f} (el campeón tiene {r['metricas'][r['campeon']]['error_medio']:.2f}). Ni un modelo perfecto podría reducir el error más de un {r['margen_mejorable']:.0%} a esta escala.", ""]
         lineas += ["", f"**Barrios con más rapiñas esperadas ({r['periodo_predicho']}):** " +
                    ", ".join(f"{p['barrio'].title()} ({p['esperado']:.1f})" for p in r["prediccion"][:10]), ""]
+    lineas += registro_alertas.seccion_informe(alertas_res)
     hist = prospectivo.resumen()
     if hist:
         lineas += ["## Registro prospectivo", "",
@@ -165,13 +167,15 @@ def resumen_aviso(estado, bitacora, resultados):
     lineas = [f"{icono} 3S · corrida {estado}"]
     for b in bitacora:
         e = b["etapa"]
-        if e in ("detenido", "error", "territorio_error", "contrato_incumplido"):
+        if e in ("detenido", "error", "territorio_error", "contrato_incumplido", "alertas_error"):
             lineas.append(f"• {e}: {b.get('motivo') or b.get('detalle')}"[:300])
         elif e == "descarga_fallida":
             copia = "se usa la copia anterior" if b.get("usa_copia_anterior") else "SIN copia anterior"
             lineas.append(f"• descarga fallida: {b['fuente']} ({copia}): {b.get('detalle', '')}"[:300])
         elif e == "contrato_adaptado":
             lineas.append(f"• {b['fuente']} cambió columnas y 3S se adaptó: {b['cambios']}")
+        elif e == "alertas_registradas":
+            lineas.append(f"• alertas de {b['trimestre']}: {b['alertas']} (detalle en mensaje aparte)")
         elif e == "prediccion_registrada":
             lineas.append(f"• predicción registrada: {b['archivo']}")
         elif e == "prediccion_calificada":
@@ -205,6 +209,7 @@ def correr(escenarios=None):
     cfg = tomllib.loads((RAIZ / "config.toml").read_text(encoding="utf-8"))
     estado = "ok"
     resultados = {}
+    alertas_res = None
     try:
         guardas.verificar()
         log(bitacora, "guardas", ok=True)
@@ -219,7 +224,12 @@ def correr(escenarios=None):
             if escenarios and nombre not in escenarios:
                 continue
             resultados[nombre] = correr_escenario(df, nombre, esc, cfg, bitacora, territorio)
-        informe(resultados, bitacora)
+        if cfg.get("alertas", {}).get("activas", True):
+            try:
+                alertas_res = registro_alertas.procesar(df, cfg, lambda e, **k: log(bitacora, e, **k))
+            except Exception as e:  # las alertas nunca deben tumbar la corrida
+                log(bitacora, "alertas_error", tipo=type(e).__name__, detalle=str(e)[:300])
+        informe(resultados, bitacora, alertas_res)
     except guardas.Detener as e:
         estado = "detenido"
         log(bitacora, "detenido", motivo=str(e))
@@ -230,6 +240,10 @@ def correr(escenarios=None):
         (RAIZ / "state" / "ultima_ok.json").write_text(
             json.dumps({"fecha": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
     avisos.enviar(resumen_aviso(estado, bitacora, resultados))
+    if estado == "ok":
+        texto = registro_alertas.mensaje(alertas_res)
+        if texto:
+            avisos.enviar(texto)
     runs = RAIZ / "state" / "corridas"
     runs.mkdir(parents=True, exist_ok=True)
     (runs / f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.json").write_text(

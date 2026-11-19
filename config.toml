@@ -42,6 +42,18 @@ areas = ["Alumbrado", "Limpieza", "Areas Verdes", "Espacios Publicos", "Calles y
 # Solo el trimestral: el MI publica por trimestre, así que una "predicción semanal" llegaría tarde.
 escenarios = ["trimestral"]
 
+[alertas]
+# Fase 5: desvíos por barrio respecto de su participación habitual en la ciudad
+activas = true
+delitos = ["RAPIÑA", "HURTO", "LESIONES"]
+subas = true
+bajas = true
+falsas_alarmas_por_trimestre = 1.0   # esperadas en toda la ciudad si nada cambiara (suma de delitos y tipos)
+delta_suba = 0.4                     # la CUSUM busca subas del 40% o más
+delta_baja = 0.3                     # y bajas del 30% o más
+min_esperado_trimestre = 5.0         # barrios con menos eventos esperados en el trimestre no se evalúan
+simulaciones = 20000
+
 [escenarios.semanal]
 freq = "W-SUN"
 backtest_desde = "2025-01-01"

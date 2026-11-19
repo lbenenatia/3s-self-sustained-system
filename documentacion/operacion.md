@@ -19,6 +19,8 @@ Si un token se filtra, mandá `/revoke` a @BotFather y cargá el nuevo. **Nunca*
 - `registro_predicciones/ultimo_informe.md`: el informe más reciente.
 - `registro_predicciones/trimestral/`: predicciones registradas a ciegas (`.csv`) y cuándo y con qué datos se hicieron (`.json`).
 - `registro_predicciones/calificaciones.csv`: cómo le fue a cada predicción frente a la realidad. Aparece después de la primera calificación.
+- `registro_alertas/<trimestre>.csv`: alertas de desvío de cada trimestre (pico, suba o baja; observado contra esperado). Se escribe una sola vez.
+- `registro_alertas/validacion.json`: cómo les fue a las alertas en la historia.
 - `state/corridas/`: la bitácora completa de cada corrida.
 - `state/registro.json`: el campeón vigente y el historial de promociones.
 
@@ -32,6 +34,8 @@ Si un token se filtra, mandá `/revoke` a @BotFather y cargá el nuevo. **Nunca*
 | • **contrato incumplido** | Una fuente cambió de una forma desconocida | Ver las columnas nuevas en el aviso, agregar el sinónimo en `contratos.py` y abrir un PR |
 | ⛔ **dominio no permitido** | Una URL apunta fuera de la lista blanca | Si el organismo se mudó de dominio, agregarlo a `dominios_permitidos` y volver a sellar |
 | ⚠️ **latido** | Más de 10 días sin una corrida exitosa | Pestaña Actions: ver si el workflow está pausado (GitHub pausa los programados tras 60 días sin actividad) o si falla |
+| 🚨 **alertas de desvío** | Llegó un trimestre nuevo y hay barrios que se desviaron | Leer el mensaje y `registro_alertas/<trimestre>.csv`. Una alerta indica un cambio a investigar, no una causa |
+| • **alertas_error** | Falló el cálculo de alertas | La corrida siguió igual. Ver el detalle en la bitácora y abrir un PR con el arreglo |
 | ❌ **error** | Falla inesperada | Abrir la corrida en Actions, ver el paso rojo y su registro |
 
 ## Correrlo localmente

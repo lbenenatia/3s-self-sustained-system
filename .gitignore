@@ -4,6 +4,7 @@
 data/
 *.csv
 !registro_predicciones/**/*.csv
+!registro_alertas/*.csv
 *.parquet
 *.zip
 *.shp
