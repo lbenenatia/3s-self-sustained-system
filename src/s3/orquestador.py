@@ -3,6 +3,7 @@
   guardas → ingesta → control de calidad → señales → backtest → promoción → predicción → informe
 """
 import json
+import os
 import time
 import tomllib
 from datetime import datetime, timezone
@@ -56,6 +57,8 @@ def ingesta(cfg, bitacora):
         df.to_parquet(pq, index=False)
         log(bitacora, "ingesta", nuevo=True, filas=rep["filas"], hasta=rep["fecha_max"])
     if df is None:
+        if not pq.exists():
+            raise guardas.Detener("no hay datos de denuncias: la descarga falló y no hay copia anterior")
         df = pd.read_parquet(pq)
         log(bitacora, "ingesta", nuevo=False, filas=len(df), hasta=str(df["FECHA"].max().date()))
     atraso = (pd.Timestamp.today() - df["FECHA"].max()).days
@@ -183,9 +186,16 @@ def preparar_datos():
     bitacora = []
     cfg = tomllib.loads((RAIZ / "config.toml").read_text(encoding="utf-8"))
     guardas.verificar()
-    if cfg["seguridad"].get("permite_red"):
-        descargas.actualizar(cfg, lambda e, **k: log(bitacora, e, **k))
-    ingesta(cfg, bitacora)
+    try:
+        if os.environ.get("S3_SIN_DESCARGAS") == "1":
+            # pruebas de cada cambio: usan la copia que dejó la corrida semanal, sin bajar 400 MB por PR
+            log(bitacora, "descargas_omitidas", motivo="S3_SIN_DESCARGAS=1")
+        elif cfg["seguridad"].get("permite_red"):
+            descargas.actualizar(cfg, lambda e, **k: log(bitacora, e, **k))
+        ingesta(cfg, bitacora)
+    except guardas.Detener as e:
+        log(bitacora, "detenido", motivo=str(e))
+        return False
     return True
 
 
