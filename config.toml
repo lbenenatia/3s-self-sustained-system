@@ -81,6 +81,6 @@ bootstrap_n = 2000
 solo_datos_agregados = true
 permite_gasto = false
 permite_red = true
-dominios_permitidos = ["catalogodatos.gub.uy", "ckan-data.montevideo.gub.uy", "www5.ine.gub.uy", "archive-api.open-meteo.com", "api.telegram.org", "discord.com"]
+dominios_permitidos = ["catalogodatos.gub.uy", "ckan-data.montevideo.gub.uy", "www5.ine.gub.uy", "archive-api.open-meteo.com", "api.telegram.org", "discord.com", "api.github.com"]
 permite_modificar_codigo = false
 unidad_minima = "barrio"

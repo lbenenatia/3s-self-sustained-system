@@ -1,0 +1,12 @@
+# Vercel solo necesita la función del agente y los archivos que lee.
+# requirements.txt se excluye a propósito: la función usa solo la biblioteca estándar y así no instala
+# pandas, scikit-learn ni geopandas (que superarían el límite de tamaño de Vercel).
+requirements.txt
+data/
+documentacion/
+tests/
+fases/
+outputs/
+state/corridas/
+*.parquet
+*.zip

@@ -29,7 +29,7 @@ jobs:
         run: python tests/test_descargas.py
       - name: Pruebas de alertas (datos simulados, sin internet)
         run: python tests/test_alertas.py
-      - name: Pruebas del agente (Discord falso, sin internet)
+      - name: Pruebas del agente (pedidos firmados de prueba, sin internet)
         run: python tests/test_agente.py
       - name: Restaurar datos de la última corrida semanal
         id: datos

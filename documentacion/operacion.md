@@ -4,7 +4,7 @@
 | Workflow | Cuándo | Qué hace |
 |---|---|---|
 | **3S semanal** | Lunes y jueves 03:17 (Uruguay) y a mano con "Run workflow" | Corrida completa, pruebas posteriores y commit del registro y la bitácora |
-| **3S agente** | Cada ~10 minutos | Lee #agente en Discord, contesta y, si se lo piden, corre, apaga o prende 3S |
+| **3S comandos** | Cuando cambia `src/s3/agente/comandos.py` en main, o a mano | Registra los comandos con barra en el servidor de Discord |
 | **3S latido** | Todos los días 10:43 | Avisa en #avisos si hace más de 10 días que no hay una corrida exitosa |
 | **3S pruebas** | En cada pull request | Verifica el sello, prepara los datos y corre las pruebas |
 
@@ -12,26 +12,38 @@
 | Nombre | Contenido |
 |---|---|
 | `DISCORD_WEBHOOK_AVISOS` | Webhook del canal #avisos (Editar canal → Integraciones → Webhooks) |
-| `DISCORD_TOKEN` | Token del bot (discord.com/developers → la aplicación → Bot → Reset Token) |
-| `DISCORD_CANAL_AGENTE` (o `DISCORD_CANAL_CHARLA`) | Id del canal #agente |
-| `DISCORD_USUARIOS` | Ids de las cuentas autorizadas, separados por coma. El bot ignora a cualquier otra |
+| `DISCORD_TOKEN` | Token del bot (discord.com/developers → la aplicación → Bot → Reset Token). Solo para registrar los comandos |
+| `DISCORD_APP_ID` | Id de la aplicación (portal de Discord → General Information → Application ID) |
+| `DISCORD_SERVIDOR` | Id del servidor 3S (clic derecho en el servidor → Copiar ID) |
 | `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID` | El canal anterior. Mientras existan, los avisos salen también por Telegram; se pueden borrar cuando Discord ande bien |
 
 Si un token o el webhook se filtran: en Discord, borrá el webhook y creá otro, o tocá Reset Token en el bot, y cargá el nuevo valor. **Nunca** pongas un token en el código, en un commit o en un issue.
 
+## El agente en Vercel
+Los comandos con barra llegan, firmados por Discord, a la función `api/discord.py` desplegada en Vercel. Vercel la vuelve a desplegar sola con cada cambio en `main` (incluidos los commits de las corridas), así que siempre lee los datos al día. Variables de entorno en Vercel (Settings → Environment Variables, solo *Production*):
+
+| Nombre | Contenido |
+|---|---|
+| `DISCORD_PUBLIC_KEY` | Clave pública de la aplicación (portal de Discord → General Information → Public Key) |
+| `DISCORD_USUARIOS` | Ids de las cuentas autorizadas, separados por coma. A cualquier otra le contesta que no está autorizada |
+| `GITHUB_TOKEN_ACCIONES` | Token fino de GitHub: solo este repositorio, permiso **Actions: Read and write**. Vence: renovarlo antes de la fecha que se le puso |
+
+En el portal de Discord, **Interactions Endpoint URL** = `https://<proyecto>.vercel.app/api/discord`.
+
 ## Hablar con el agente (canal #agente)
 | Comando | Qué hace |
 |---|---|
-| `!ayuda` | Lista de comandos |
-| `!estado` | Última corrida, datos, campeones, última predicción y alertas |
-| `!alertas` / `!alertas rapiña` | Alertas del último trimestre, de la más fuerte a la más débil |
-| `!barrio Cerro` | Cómo viene un barrio: último trimestre, cambio, puesto en la ciudad y sus alertas. Entiende nombres aproximados y abreviaturas |
-| `!ranking hurto` | Los 10 barrios con más denuncias del último trimestre |
-| `!correr` | Corre 3S ahora. Pide `!confirmar CÓDIGO` (vence en 20 minutos) |
-| `!apagar` | Apaga las corridas automáticas (desactiva el workflow "3S semanal"). Inmediato, sin confirmación |
-| `!encender` | Las vuelve a prender. Pide confirmación |
+| `/ayuda` | Lista de comandos |
+| `/estado` | Última corrida, datos, campeones, última predicción y alertas |
+| `/alertas` (delito opcional) | Alertas del último trimestre, de la más fuerte a la más débil |
+| `/barrio` | Cómo viene un barrio: último trimestre, cambio, puesto en la ciudad y sus alertas. Sugiere los nombres mientras escribís |
+| `/ranking` (delito opcional) | Los 10 barrios con más denuncias del último trimestre |
+| `/preguntar` | Preguntas en lenguaje natural (cuando haya un modelo de lenguaje) |
+| `/correr` | Corre 3S ahora. Pide tocar **Confirmar** (vence en 10 minutos; el botón desaparece al usarlo) |
+| `/apagar` | Apaga las corridas automáticas (desactiva el workflow "3S semanal"). Inmediato, sin confirmación |
+| `/encender` | Las vuelve a prender. Pide confirmación |
 
-El bot se despierta cada ~10 minutos, así que la respuesta puede tardar un rato. Para apagar también el agente: Actions → 3S agente → "Disable workflow".
+Responde en uno o dos segundos. Para desconectar el agente del todo: borrar la Interactions Endpoint URL en el portal de Discord, o pausar el proyecto en Vercel.
 
 ## Dónde mirar
 - `registro_predicciones/ultimo_informe.md`: el informe más reciente.
@@ -54,7 +66,8 @@ El bot se despierta cada ~10 minutos, así que la respuesta puede tardar un rato
 | ⚠️ **latido** | Más de 10 días sin una corrida exitosa | Pestaña Actions: ver si el workflow está pausado (GitHub pausa los programados tras 60 días sin actividad) o si falla |
 | 🚨 **alertas de desvío** | Llegó un trimestre nuevo y hay barrios que se desviaron | Leer el mensaje y `registro_alertas/<trimestre>.csv`. Una alerta indica un cambio a investigar, no una causa |
 | • **alertas_error** | Falló el cálculo de alertas | La corrida siguió igual. Ver el detalle en la bitácora y abrir un PR con el arreglo |
-| ❌ **el agente falló** | Una vuelta del agente no pudo leer o escribir en Discord | Si se repite: revisar que los secretos de Discord estén bien y que el bot siga en el servidor con permiso de ver y escribir en #agente |
+| Discord dice **"La aplicación no respondió"** | La función de Vercel no contestó en 3 segundos o no está desplegada | Vercel → el proyecto → Deployments / Logs. Revisar las variables de entorno y que la URL del portal termine en `/api/discord` |
+| ❌ **GitHub respondió 401/403** al correr o apagar | El token de GitHub venció o le falta el permiso | Crear un token fino nuevo (Actions: Read and write) y reemplazar `GITHUB_TOKEN_ACCIONES` en Vercel |
 | ❌ **error** | Falla inesperada | Abrir la corrida en Actions, ver el paso rojo y su registro |
 
 ## Correrlo localmente
