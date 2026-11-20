@@ -77,6 +77,13 @@ Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas má
 - **Reglas del agente:** solo obedece a las dos cuentas autorizadas; solo lee; las únicas acciones son correr, apagar y prender, y las ejecuta el workflow; correr y prender piden tocar un botón de confirmación firmado que vence y desaparece al usarse; apagar es inmediato (3S nunca se resiste a que lo apaguen); el texto externo es dato, nunca orden; un modelo pago no carga mientras las reglas selladas no permitan gastar y no haya un tope mensual.
 - **Sin estado propio:** el canal es la bitácora y las acciones quedan en GitHub Actions. No hay base de datos que cuidar.
 
+### Fase 7 · Estimación del presente con noticias: prueba de viabilidad
+Antes de construir nada se probó si la idea podía funcionar, con el archivo de títulos que Subrayado y El Observador publican desde 2017 (sin bajar el texto de las notas ni guardar títulos).
+- **Resultado: las noticias no mejoran el esperado de la Fase 5,** ni por barrio ni para la ciudad entera, en rapiñas, hurtos ni lesiones (31 trimestres, 2019–2026; todas las mejoras entre −2% y +1,5%, con intervalos que incluyen el cero). Tampoco adelantan las subas que después confirma el dato oficial.
+- **No es solo falta de volumen.** La prensa ubica en un barrio el 0,8% de las rapiñas, el 0,2% de los hurtos y el 4,5% de las lesiones. Una muestra *al azar* del 0,5% de las denuncias ya mejoraría el total de la ciudad un 5%; la prensa no, porque lo que publica depende de criterios editoriales y no de cuántos delitos hubo.
+- **Conclusión:** no se construye el estimador con prensa. Lo que haría falta es una fuente que cubra una fracción estable de los hechos, aunque sea chica: partes policiales o datos oficiales más frecuentes.
+- Detalle, límites y código en [analisis/fase7_viabilidad/RESULTADOS.md](../analisis/fase7_viabilidad/RESULTADOS.md).
+
 ## Resultados actuales (datos al 30/09/2026)
 | Escenario | Mejor método | Error medio | Piso del azar | Margen máximo |
 |---|---|---|---|---|
@@ -84,7 +91,7 @@ Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas má
 | Trimestral, por barrio | Promedio reciente | 16,5 | 6,6 | 60% |
 
 ## Hacia dónde va
-- **Fase 7 · Estimación del presente con noticias:** ver [traspaso-fase-7.md](traspaso-fase-7.md).
+- **Fase 7 · Estimación del presente:** la prensa no sirvió (ver arriba). Queda abierto buscar una fuente oficial más frecuente; el encargo original está en [traspaso-fase-7.md](traspaso-fase-7.md).
 - **Fase 8 · Agente mantenedor e investigador:** cuando algo se rompe, investiga y propone el arreglo como pull request; también propone y prueba mejoras. Nunca fusiona solo.
 - **Evaluación de intervenciones:** medir si una política funcionó, comparando con barrios parecidos donde no se aplicó (control sintético, diferencias en diferencias).
 - **Interior del país,** por seccionales.
