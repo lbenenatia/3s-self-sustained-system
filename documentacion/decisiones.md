@@ -44,7 +44,7 @@ Primer modelo de rapiñas por barrio de Montevideo, con autoevaluación honesta 
 
 ### Fase 4 · Producción
 - Corre gratis en GitHub Actions: semanal, más un latido diario y pruebas en cada pull request.
-- Avisos por Telegram.
+- Avisos por Telegram (desde la Fase 6, por Discord).
 - **Registro prospectivo:** las predicciones se publican antes de que existan los datos reales y se califican cuando llegan. Es la forma de construir evidencia que cualquiera pueda verificar.
 
 ### Fase 5 · Alertas de desvío por barrio
@@ -69,6 +69,13 @@ Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas má
 
 **Límite honesto:** con datos públicos, las alertas llegan cuando el Ministerio publica el trimestre, con unas 3 semanas de atraso. No son en tiempo real; para eso harían falta datos más frecuentes.
 
+### Fase 6 · Agente por Discord
+- **Discord en vez de Telegram:** canales separados para los avisos automáticos (#avisos) y la conversación (#agente). Los avisos salen por un webhook, así que llegan aunque el bot falle.
+- **El bot es la voz del agente.** Hoy contesta comandos fijos; cuando se enchufe un modelo de lenguaje va a entender preguntas libres, con las mismas reglas.
+- **Sondeo cada ~10 minutos desde GitHub Actions** en vez de un servidor siempre prendido: gratis y sin otra plataforma que cuidar, a cambio de unos minutos de demora.
+- **Reglas del agente:** solo obedece a las dos cuentas autorizadas; solo lee; las únicas acciones son correr, apagar y prender, y las ejecuta el workflow; correr y prender piden un código que vence; apagar es inmediato (3S nunca se resiste a que lo apaguen); el texto externo es dato, nunca orden; un modelo pago no carga mientras las reglas selladas no permitan gastar y no haya un tope mensual.
+- **Sin estado propio:** el canal es la bitácora. No hay archivos que se desincronicen ni commits cada diez minutos.
+
 ## Resultados actuales (datos al 30/09/2026)
 | Escenario | Mejor método | Error medio | Piso del azar | Margen máximo |
 |---|---|---|---|---|
@@ -76,6 +83,8 @@ Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas má
 | Trimestral, por barrio | Promedio reciente | 16,5 | 6,6 | 60% |
 
 ## Hacia dónde va
+- **Fase 7 · Estimación del presente con noticias:** ver [traspaso-fase-7.md](traspaso-fase-7.md).
+- **Fase 8 · Agente mantenedor e investigador:** cuando algo se rompe, investiga y propone el arreglo como pull request; también propone y prueba mejoras. Nunca fusiona solo.
 - **Evaluación de intervenciones:** medir si una política funcionó, comparando con barrios parecidos donde no se aplicó (control sintético, diferencias en diferencias).
 - **Interior del país,** por seccionales.
 - **Automejora acotada:** 3S propone mejoras como pull requests con pruebas. Nunca se fusionan solos.

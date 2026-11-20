@@ -17,8 +17,10 @@
 | `registro.py` | Campeón y retador: decide si un modelo nuevo reemplaza al vigente |
 | `prospectivo.py` | Registra predicciones a ciegas y las califica cuando llegan los datos |
 | `alertas.py` | Alertas de desvío: línea base por barrio, CUSUM de subas y bajas, picos, umbrales calibrados por simulación y validación histórica |
-| `registro_alertas.py` | Registro público e inmutable de alertas por trimestre, mensaje de Telegram y sección del informe |
-| `avisos.py` | Telegram y latido |
+| `registro_alertas.py` | Registro público e inmutable de alertas por trimestre, mensaje de aviso y sección del informe |
+| `resumen_barrios.py` | Escribe `state/resumen_barrios.json`: conteos por barrio, delito y trimestre para que el agente conteste rápido |
+| `agente/` | **Fase 6.** `bot.py` (comandos y confirmaciones), `herramientas.py` (consultas de solo lectura), `discord.py` (cliente mínimo), `proveedor.py` (modelo de lenguaje enchufable) e `interprete.py` (redacta los avisos) |
+| `avisos.py` | Discord (#avisos), Telegram durante la transición, y latido |
 | `orquestador.py` | Une todo en una corrida |
 
 ## Una corrida
@@ -36,6 +38,11 @@ Cada corrida evalúa a todos los retadores contra el campeón vigente. Para reem
 
 ## Alertas de desvío
 ![Alertas](diagramas/08_alertas.png)
+
+## Agente
+![Agente](diagramas/09_agente.png)
+
+El agente no queda conectado: un workflow lo despierta cada ~10 minutos, lee los mensajes nuevos de #agente, contesta y termina. No guarda estado: sabe qué ya contestó mirando su última respuesta en el canal, y valida las confirmaciones leyendo sus propios mensajes. Solo elige entre tres acciones (correr, apagar, prender) y las ejecuta el workflow con el permiso mínimo. Sin modelo de lenguaje entiende comandos fijos; cuando se elija uno, se enchufa en `proveedor.py` sin tocar el resto.
 
 ## Producción
 ![Producción](diagramas/07_produccion.png)

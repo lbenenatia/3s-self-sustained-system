@@ -7,6 +7,8 @@
   python run.py --encender    lo desactiva
   python run.py --latido      avisa si hace más de 10 días que no hay una corrida exitosa
   python run.py --solo-datos  descarga y prepara los datos sin entrenar (para las pruebas)
+  python run.py --agente      una vuelta del agente: lee #agente en Discord y contesta (Fase 6)
+  python run.py --aviso TEXTO manda un aviso a #avisos (lo usan los workflows)
 """
 import sys
 from pathlib import Path
@@ -28,6 +30,12 @@ if __name__ == "__main__":
     elif "--latido" in args:
         from avisos import latido
         sys.exit(0 if latido() else 1)
+    elif "--agente" in args:
+        from agente.bot import main
+        sys.exit(main())
+    elif "--aviso" in args:
+        from avisos import enviar
+        enviar(" ".join(args[args.index("--aviso") + 1:]) or "3S · aviso sin texto")
     elif "--solo-datos" in args:
         from orquestador import preparar_datos
         sys.exit(0 if preparar_datos() else 1)

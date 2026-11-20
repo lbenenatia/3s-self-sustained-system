@@ -11,8 +11,8 @@ flowchart TB
     D{{"🔻 Baja sostenida<br/>CUSUM −30%"}}
     R[("registro_alertas/<br/>trimestre.csv (inmutable)")]
     V["Validación histórica<br/>¿el barrio siguió desviado<br/>el trimestre siguiente?"]
-    TG["Telegram<br/>solo si hay alertas"]
-    F6["Fase 6<br/>¿qué funcionó en las bajas?"]:::futuro
+    TG["Discord #avisos<br/>solo si hay alertas"]
+    F6["Evaluación de intervenciones<br/>¿qué funcionó en las bajas?"]:::futuro
     T --> B --> E
     S --> P & U & D
     E --> P & U & D
