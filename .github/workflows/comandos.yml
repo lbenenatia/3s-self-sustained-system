@@ -1,0 +1,28 @@
+# 3S · registra los comandos con barra (/barrio, /alertas…) en el servidor de Discord.
+# Corre solo cuando cambia la lista de comandos en main, o a mano con "Run workflow".
+name: 3S comandos
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/s3/agente/comandos.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  registrar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Registrar comandos
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          DISCORD_APP_ID: ${{ secrets.DISCORD_APP_ID }}
+          DISCORD_SERVIDOR: ${{ secrets.DISCORD_SERVIDOR }}
+        run: python run.py --registrar-comandos

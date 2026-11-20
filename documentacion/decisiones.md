@@ -72,9 +72,10 @@ Las alertas no son ruido: señalan cambios que se mantienen. Que haya muchas má
 ### Fase 6 · Agente por Discord
 - **Discord en vez de Telegram:** canales separados para los avisos automáticos (#avisos) y la conversación (#agente). Los avisos salen por un webhook, así que llegan aunque el bot falle.
 - **El bot es la voz del agente.** Hoy contesta comandos fijos; cuando se enchufe un modelo de lenguaje va a entender preguntas libres, con las mismas reglas.
-- **Sondeo cada ~10 minutos desde GitHub Actions** en vez de un servidor siempre prendido: gratis y sin otra plataforma que cuidar, a cambio de unos minutos de demora.
-- **Reglas del agente:** solo obedece a las dos cuentas autorizadas; solo lee; las únicas acciones son correr, apagar y prender, y las ejecuta el workflow; correr y prender piden un código que vence; apagar es inmediato (3S nunca se resiste a que lo apaguen); el texto externo es dato, nunca orden; un modelo pago no carga mientras las reglas selladas no permitan gastar y no haya un tope mensual.
-- **Sin estado propio:** el canal es la bitácora. No hay archivos que se desincronicen ni commits cada diez minutos.
+- **Respuesta al instante con comandos con barra y Vercel.** La primera versión revisaba el canal cada ~10 minutos desde GitHub Actions: gratis, pero 10 a 15 minutos de demora era demasiado para conversar. Ahora Discord llama a una función en Vercel (plan gratuito, uso no comercial) que contesta en uno o dos segundos. Se eligió Vercel sobre Cloudflare Workers para reusar el mismo código Python; la firma de Discord se verifica con una implementación de referencia en Python puro para no instalar dependencias. Si 3S pasa a ser un servicio con fines comerciales, hay que revisar el plan de Vercel.
+- **Las preguntas libres entran solo por `/preguntar`:** el agente nunca lee mensajes sueltos del canal.
+- **Reglas del agente:** solo obedece a las dos cuentas autorizadas; solo lee; las únicas acciones son correr, apagar y prender, y las ejecuta el workflow; correr y prender piden tocar un botón de confirmación firmado que vence y desaparece al usarse; apagar es inmediato (3S nunca se resiste a que lo apaguen); el texto externo es dato, nunca orden; un modelo pago no carga mientras las reglas selladas no permitan gastar y no haya un tope mensual.
+- **Sin estado propio:** el canal es la bitácora y las acciones quedan en GitHub Actions. No hay base de datos que cuidar.
 
 ## Resultados actuales (datos al 30/09/2026)
 | Escenario | Mejor método | Error medio | Piso del azar | Margen máximo |

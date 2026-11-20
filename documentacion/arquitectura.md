@@ -19,7 +19,7 @@
 | `alertas.py` | Alertas de desvío: línea base por barrio, CUSUM de subas y bajas, picos, umbrales calibrados por simulación y validación histórica |
 | `registro_alertas.py` | Registro público e inmutable de alertas por trimestre, mensaje de aviso y sección del informe |
 | `resumen_barrios.py` | Escribe `state/resumen_barrios.json`: conteos por barrio, delito y trimestre para que el agente conteste rápido |
-| `agente/` | **Fase 6.** `bot.py` (comandos y confirmaciones), `herramientas.py` (consultas de solo lectura), `discord.py` (cliente mínimo), `proveedor.py` (modelo de lenguaje enchufable) e `interprete.py` (redacta los avisos) |
+| `agente/` | **Fase 6.** `interacciones.py` (atiende los comandos de Discord), `herramientas.py` (consultas de solo lectura), `comandos.py` (lista de comandos y registro), `ed25519.py` (verificación de firmas, sin dependencias), `proveedor.py` (modelo de lenguaje enchufable) e `interprete.py` (redacta los avisos). La entrada web es `api/discord.py`, en Vercel |
 | `avisos.py` | Discord (#avisos), Telegram durante la transición, y latido |
 | `orquestador.py` | Une todo en una corrida |
 
@@ -42,7 +42,7 @@ Cada corrida evalúa a todos los retadores contra el campeón vigente. Para reem
 ## Agente
 ![Agente](diagramas/09_agente.png)
 
-El agente no queda conectado: un workflow lo despierta cada ~10 minutos, lee los mensajes nuevos de #agente, contesta y termina. No guarda estado: sabe qué ya contestó mirando su última respuesta en el canal, y valida las confirmaciones leyendo sus propios mensajes. Solo elige entre tres acciones (correr, apagar, prender) y las ejecuta el workflow con el permiso mínimo. Sin modelo de lenguaje entiende comandos fijos; cuando se elija uno, se enchufa en `proveedor.py` sin tocar el resto.
+Cuando alguien usa un comando con barra, Discord le manda un pedido firmado a la función `api/discord.py` en Vercel, que verifica la firma y contesta en uno o dos segundos. Vercel la redespliega con cada cambio en `main`, así que lee siempre los archivos que dejó la última corrida (`state/resumen_barrios.json`, `registro_alertas/`). No guarda estado: los botones de confirmación llevan su fecha y una firma propia, vencen a los 10 minutos y desaparecen al usarse. Solo puede elegir entre tres acciones (correr, apagar, prender el workflow semanal), con un token de GitHub limitado a eso. Sin modelo de lenguaje entiende comandos fijos; cuando se elija uno, se enchufa en `proveedor.py` sin tocar el resto.
 
 ## Producción
 ![Producción](diagramas/07_produccion.png)

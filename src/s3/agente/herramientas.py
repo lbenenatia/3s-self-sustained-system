@@ -154,6 +154,21 @@ def buscar_barrio(texto):
     return None, candidatos
 
 
+def sugerir_barrios(texto, maximo=25):
+    """Opciones para el autocompletado de /barrio: primero los que empiezan así, después los que lo contienen."""
+    res = _json("state/resumen_barrios.json")
+    if not res:
+        return []
+    nombres = sorted(res["barrios"])
+    q = _clave(texto)
+    if q:
+        empieza = [n for n in nombres if any(p.startswith(q) for p in [_clave(n)] + [_clave(x) for x in n.split(",")])]
+        contiene = [n for n in nombres if n not in empieza and q in _clave(n)]
+        parecidos = [] if empieza or contiene else (buscar_barrio(texto)[1] or [buscar_barrio(texto)[0]])
+        nombres = [n for n in empieza + contiene + parecidos if n]
+    return [{"name": _titulo(n)[:100], "value": n} for n in nombres[:maximo]]
+
+
 def _pct(a, b):
     return f"{(a - b) / b * 100:+.0f}%" if b else "s/d"
 

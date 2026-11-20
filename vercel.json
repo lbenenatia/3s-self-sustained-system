@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": {
+    "api/discord.py": {
+      "maxDuration": 10,
+      "includeFiles": "{src/s3/**,state/*.json,registro_alertas/**,registro_predicciones/**,config.toml}"
+    }
+  }
+}

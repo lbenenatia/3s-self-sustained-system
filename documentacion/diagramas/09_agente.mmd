@@ -2,22 +2,25 @@
 title: 3S · Agente por Discord (Fase 6)
 ---
 flowchart LR
-    subgraph DC["Servidor de Discord 3S"]
-        AV["#avisos<br/>corridas · alertas · latido"]
-        AG["#agente<br/>conversación"]
-    end
     H(("Los dos socios<br/>únicas cuentas<br/>autorizadas"))
-    H -- "!barrio Cerro<br/>!alertas · !estado" --> AG
-    subgraph GA["GitHub Actions · gratis"]
-        W["3S agente<br/>cada ~10 min"]
-        S["3S semanal<br/>lunes y jueves"]
+    subgraph DC["Servidor de Discord 3S"]
+        AG["#agente<br/>/barrio · /alertas · /estado<br/>/correr · /apagar"]
+        AV["#avisos<br/>corridas · alertas · latido"]
     end
-    AG -- "lee mensajes nuevos" --> W
-    W --> RG{"Reglas del agente<br/>comandos fijos · solo lectura<br/>texto externo = dato<br/>sin gasto · menciones apagadas"}
+    subgraph VC["Vercel · gratis"]
+        F["api/discord.py<br/>responde en 1–2 s"]
+        RG{"Reglas del agente<br/>firma de Discord · solo lectura<br/>botón de confirmación que vence<br/>texto externo = dato · sin gasto"}
+    end
+    subgraph GA["GitHub · gratis"]
+        S["3S semanal<br/>lunes y jueves"]
+        D[("main<br/>resumen_barrios.json<br/>registro_alertas · estado")]
+    end
+    H --> AG
+    AG -- "pedido firmado" --> F --> RG
     RG -- "respuesta" --> AG
-    RG -- "!correr / !encender<br/>con código que vence" --> S
-    RG -- "!apagar (inmediato)" --> S
-    S -- "resumen_barrios.json<br/>registro_alertas · estado" --> W
+    RG -- "correr · apagar · prender<br/>(token solo de Actions)" --> S
+    S -- "commit" --> D
+    D -- "redespliegue automático" --> F
     S -- "webhook" --> AV
     M["Modelo de lenguaje<br/>(enchufable, a decidir)"]:::futuro -.-> RG
     classDef futuro stroke-dasharray: 5 5,fill:#f4f4f4,color:#666

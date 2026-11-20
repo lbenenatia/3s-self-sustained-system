@@ -1,7 +1,8 @@
 """Cliente mínimo de la API de Discord (solo biblioteca estándar).
 
-El bot no queda conectado: cada pocos minutos el workflow lo despierta, lee los mensajes nuevos del
-canal #agente, contesta y termina. Todas las direcciones pasan por la lista blanca sellada.
+Hoy se usa solo para registrar los comandos con barra. Las respuestas a los comandos no pasan por acá:
+viajan en la misma respuesta HTTP que la función de Vercel le devuelve a Discord.
+Todas las direcciones pasan por la lista blanca sellada.
 """
 import json
 import time
@@ -9,7 +10,7 @@ import urllib.error
 import urllib.request
 
 import guardas
-from avisos import AGENTE_HTTP, partir
+from avisos import AGENTE_HTTP
 
 API = "https://discord.com/api/v10"
 
@@ -19,10 +20,9 @@ class ErrorDiscord(Exception):
 
 
 class Discord:
-    def __init__(self, token: str, canal: str):
+    def __init__(self, token: str, canal=None):
         self._token = token
         self.canal = canal
-        self._yo = None
 
     def _pedir(self, metodo, ruta, cuerpo=None, reintentar=True):
         url = API + ruta
@@ -42,19 +42,3 @@ class Discord:
                 return self._pedir(metodo, ruta, cuerpo, reintentar=False)
             # nunca se imprime el token; solo el código y la ruta
             raise ErrorDiscord(f"Discord respondió {e.code} en {metodo} {ruta.split('?')[0]}") from None
-
-    def yo(self) -> str:
-        if self._yo is None:
-            self._yo = self._pedir("GET", "/users/@me")["id"]
-        return self._yo
-
-    def mensajes(self, limite=50):
-        """Últimos mensajes del canal, del más nuevo al más viejo."""
-        return self._pedir("GET", f"/channels/{self.canal}/messages?limit={limite}") or []
-
-    def responder(self, texto, referencia=None):
-        for i, trozo in enumerate(partir(texto)):
-            cuerpo = {"content": trozo, "allowed_mentions": {"parse": []}}
-            if referencia and i == 0:
-                cuerpo["message_reference"] = {"message_id": referencia, "fail_if_not_exists": False}
-            self._pedir("POST", f"/channels/{self.canal}/messages", cuerpo)
