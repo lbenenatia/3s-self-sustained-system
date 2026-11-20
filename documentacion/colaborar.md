@@ -18,7 +18,7 @@
 - **Secretos:** ni tokens ni claves en el código. Van en los secretos de GitHub.
 - **Datos de personas:** las señales son conteos agregados por barrio y período. Las guardas bloquean campos como edad, sexo, nacionalidad, antecedentes o identificadores.
 - **Cambiar las reglas de seguridad** (`guardas.py` o la sección `[seguridad]` de `config.toml`) requiere volver a sellar con `python run.py --sellar` y hacer commit de `state/sello.json`. Ese PR lo revisan las dos personas con especial cuidado.
-- **El registro de predicciones es inmutable.** Nunca se edita ni se borra un archivo de `registro_predicciones/trimestral/`: su valor está en que su fecha es verificable.
+- **Los registros son inmutables.** Nunca se edita ni se borra un archivo de `registro_predicciones/trimestral/` ni de `registro_alertas/`: su valor está en que su fecha es verificable.
 - **Dependencias:** las versiones están fijas en `requirements.txt`. Cambiarlas es un PR aparte, con todas las pruebas.
 
 ## Agregar una señal nueva

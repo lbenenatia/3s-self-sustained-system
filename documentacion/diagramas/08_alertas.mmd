@@ -1,0 +1,22 @@
+---
+title: 3S · Alertas de desvío por barrio (Fase 5)
+---
+flowchart TB
+    T["Llega un trimestre nuevo<br/>(rapiña · hurto · lesiones)"]
+    B["Línea base de cada barrio<br/>su participación en la ciudad<br/>en las 52 semanas previas"]
+    E["Esperado semana a semana<br/>participación × total de la ciudad<br/>(sin efecto de tendencias generales ni estaciones)"]
+    S["Umbrales por simulación<br/>binomial negativa · ≤ 1 falsa alarma<br/>esperada por trimestre en toda la ciudad"]
+    P{{"🔺 Pico<br/>una semana muy improbable"}}
+    U{{"🔺 Suba sostenida<br/>CUSUM +40%"}}
+    D{{"🔻 Baja sostenida<br/>CUSUM −30%"}}
+    R[("registro_alertas/<br/>trimestre.csv (inmutable)")]
+    V["Validación histórica<br/>¿el barrio siguió desviado<br/>el trimestre siguiente?"]
+    TG["Telegram<br/>solo si hay alertas"]
+    F6["Fase 6<br/>¿qué funcionó en las bajas?"]:::futuro
+    T --> B --> E
+    S --> P & U & D
+    E --> P & U & D
+    P & U & D --> R --> TG
+    R --> V
+    D -.-> F6
+    classDef futuro stroke-dasharray: 5 5,color:#666

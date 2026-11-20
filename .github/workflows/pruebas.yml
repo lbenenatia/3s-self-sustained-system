@@ -27,6 +27,8 @@ jobs:
         run: python src/s3/guardas.py
       - name: Pruebas de descargas (servidor local, sin internet)
         run: python tests/test_descargas.py
+      - name: Pruebas de alertas (datos simulados, sin internet)
+        run: python tests/test_alertas.py
       - name: Restaurar datos de la última corrida semanal
         id: datos
         uses: actions/cache/restore@v4

@@ -14,7 +14,8 @@ y registra sus predicciones **antes** de que se conozcan los resultados, para qu
 2. **Construye señales por barrio:** historia de rapiñas, calendario uruguayo y horas de oscuridad, otros delitos, reclamos a la Intendencia (alumbrado, limpieza, áreas verdes…) y clima.
 3. **Compite contra lo simple:** cada variante del modelo se evalúa contra "el promedio reciente" con un backtest de origen móvil. Solo reemplaza al campeón si el intervalo de confianza del 90% de su mejora es mayor que cero.
 4. **Mide su propio techo:** calcula cuánto error dejaría el puro azar aunque se conociera la tasa real de cada barrio.
-5. **Registra predicciones a ciegas** en [`registro_predicciones/`](registro_predicciones/) y las **califica** cuando el Ministerio publica los datos reales.
+5. **Alerta desvíos por barrio:** cada trimestre señala picos, subas y bajas sostenidas de rapiñas, hurtos y lesiones respecto de lo habitual del barrio, con como máximo una falsa alarma esperada por trimestre. En 42 trimestres de historia, el 76% de las subas y el 88% de las bajas alertadas se mantuvieron el trimestre siguiente. Quedan en [`registro_alertas/`](registro_alertas/).
+6. **Registra predicciones a ciegas** en [`registro_predicciones/`](registro_predicciones/) y las **califica** cuando el Ministerio publica los datos reales.
 
 ## Qué NO hace
 - **No usa ni produce datos sobre personas.** Las señales son conteos agregados por barrio y período, y las guardas bloquean cualquier campo personal.
