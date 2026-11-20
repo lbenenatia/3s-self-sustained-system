@@ -89,3 +89,16 @@ error de 2,42 contra 2,47 en rapiñas, 4,75 contra 4,86 en hurtos y 0,93 contra 
 como línea de base para cualquier estimación futura del presente.
 
 Los números completos están en `resultados.json`.
+
+## ¿Hay una fuente oficial más frecuente? (relevamiento del 20/11/2026)
+
+- **Catálogo de datos abiertos:** el único conjunto del Ministerio del Interior sobre delitos es el que 3S
+  ya usa, con frecuencia declarada de 90 días. El último trimestre (hasta el 30/09) se publicó el 20/10:
+  unas 3 semanas de atraso. No hay versión mensual ni semanal.
+- **Noticias del Ministerio (gub.uy):** no tienen RSS y son comunicados institucionales de todo el país
+  (operativos, condenas, actividades). Tienen el mismo problema que la prensa: se elige qué contar.
+- **Jefatura de Montevideo:** no se encontró un canal público con partes diarios.
+
+Con lo que hoy es público no hay cómo estimar el presente. La vía que queda es pedirle al Ministerio
+conteos agregados más frecuentes (por barrio y mes o semana, sin datos de personas), por ejemplo con un
+pedido de acceso a la información pública. Eso lo tienen que decidir y hacer las personas del equipo.
