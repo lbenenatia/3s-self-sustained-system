@@ -1,4 +1,4 @@
-# 3S · latido diario: avisa por Telegram si hace más de 10 días que no hay una corrida exitosa
+# 3S · latido diario: avisa por Discord (y Telegram) si hace más de 10 días que no hay una corrida exitosa
 name: 3S latido
 
 on:
@@ -22,6 +22,7 @@ jobs:
           python-version: "3.13"
       - name: Verificar latido
         env:
+          DISCORD_WEBHOOK_AVISOS: ${{ secrets.DISCORD_WEBHOOK_AVISOS }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python run.py --latido

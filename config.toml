@@ -54,6 +54,13 @@ delta_baja = 0.3                     # y bajas del 30% o más
 min_esperado_trimestre = 5.0         # barrios con menos eventos esperados en el trimestre no se evalúan
 simulaciones = 20000
 
+[agente]
+# Fase 6: el agente conversa por Discord (canal #agente) y redacta los avisos.
+# "ninguno" = sin modelo de lenguaje: entiende solo comandos fijos (!ayuda). Gratis.
+# Para enchufar un modelo: agregar su clase en src/s3/agente/proveedor.py y cambiar este valor.
+proveedor = "ninguno"
+tope_usd_mes = 0          # obligatorio (> 0) si el proveedor tiene costo; además hay que habilitar el gasto en [seguridad]
+
 [escenarios.semanal]
 freq = "W-SUN"
 backtest_desde = "2025-01-01"
@@ -74,6 +81,6 @@ bootstrap_n = 2000
 solo_datos_agregados = true
 permite_gasto = false
 permite_red = true
-dominios_permitidos = ["catalogodatos.gub.uy", "ckan-data.montevideo.gub.uy", "www5.ine.gub.uy", "archive-api.open-meteo.com", "api.telegram.org"]
+dominios_permitidos = ["catalogodatos.gub.uy", "ckan-data.montevideo.gub.uy", "www5.ine.gub.uy", "archive-api.open-meteo.com", "api.telegram.org", "discord.com"]
 permite_modificar_codigo = false
 unidad_minima = "barrio"

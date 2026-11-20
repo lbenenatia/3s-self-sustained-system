@@ -19,6 +19,8 @@ import ingest as ing
 import prospectivo
 import registro
 import registro_alertas
+import resumen_barrios
+from agente import interprete
 import territorio as terr
 from features import panel, CONJUNTOS
 from ingest import load_denuncias, check_quality
@@ -167,7 +169,7 @@ def resumen_aviso(estado, bitacora, resultados):
     lineas = [f"{icono} 3S · corrida {estado}"]
     for b in bitacora:
         e = b["etapa"]
-        if e in ("detenido", "error", "territorio_error", "contrato_incumplido", "alertas_error"):
+        if e in ("detenido", "error", "territorio_error", "contrato_incumplido", "alertas_error", "resumen_error"):
             lineas.append(f"• {e}: {b.get('motivo') or b.get('detalle')}"[:300])
         elif e == "descarga_fallida":
             copia = "se usa la copia anterior" if b.get("usa_copia_anterior") else "SIN copia anterior"
@@ -229,6 +231,10 @@ def correr(escenarios=None):
                 alertas_res = registro_alertas.procesar(df, cfg, lambda e, **k: log(bitacora, e, **k))
             except Exception as e:  # las alertas nunca deben tumbar la corrida
                 log(bitacora, "alertas_error", tipo=type(e).__name__, detalle=str(e)[:300])
+        try:
+            resumen_barrios.escribir(df, cfg, lambda e, **k: log(bitacora, e, **k))
+        except Exception as e:  # el resumen para el agente tampoco
+            log(bitacora, "resumen_error", tipo=type(e).__name__, detalle=str(e)[:300])
         informe(resultados, bitacora, alertas_res)
     except guardas.Detener as e:
         estado = "detenido"
@@ -239,11 +245,10 @@ def correr(escenarios=None):
     if estado == "ok":
         (RAIZ / "state" / "ultima_ok.json").write_text(
             json.dumps({"fecha": datetime.now(timezone.utc).isoformat(timespec="seconds")}) + "\n")
-    avisos.enviar(resumen_aviso(estado, bitacora, resultados))
-    if estado == "ok":
-        texto = registro_alertas.mensaje(alertas_res)
-        if texto:
-            avisos.enviar(texto)
+    texto_alertas = registro_alertas.mensaje(alertas_res) if estado == "ok" else None
+    avisos.enviar(interprete.redactar(resumen_aviso(estado, bitacora, resultados), texto_alertas))
+    if texto_alertas:
+        avisos.enviar(texto_alertas)
     runs = RAIZ / "state" / "corridas"
     runs.mkdir(parents=True, exist_ok=True)
     (runs / f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.json").write_text(

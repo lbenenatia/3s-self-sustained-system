@@ -135,7 +135,7 @@ reciente) para las semanas que el dato oficial todavía no cubre?**
   Acordate de la excepción en `.gitignore` (como la de `registro_alertas/*.csv`) y de sumar la carpeta
   al `git add` de `semanal.yml`.
 - Los hechos extraídos (fecha, barrio, tipo, fuente, enlace) van al caché de `data/`, **no** al repositorio.
-- Una sección corta en el informe y, si hay algo fuera de lo normal, una línea en el resumen de Telegram.
+- Una sección corta en el informe y, si hay algo fuera de lo normal, una línea en el aviso de #avisos (Discord).
 - `tests/test_noticias.py` que corra **sin internet**, con notas de ejemplo inventadas, y que se sume a
   `pruebas.yml` y al paso de pruebas de `semanal.yml`.
 - Actualizar `documentacion/decisiones.md`, `arquitectura.md` y un diagrama del flujo nuevo.
@@ -157,7 +157,7 @@ reciente) para las semanas que el dato oficial todavía no cubre?**
 
 ## 9. Coordinación con la Fase 6
 
-En paralelo se construye la Fase 6: un agente que interpreta los informes y conversa por Telegram.
+En paralelo se construye la Fase 6: un agente que interpreta los informes y conversa por Discord (canal #agente).
 Incluye una **interfaz de proveedor de modelo** (para cambiar entre un modelo gratis, pago o local sin
 tocar el resto) y las **reglas del agente** (herramientas permitidas, tope de gasto, registro de todo,
 el texto externo como dato). Si en la Fase 7 hace falta un modelo de lenguaje para extraer mejor, usá
