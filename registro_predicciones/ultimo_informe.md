@@ -1,4 +1,4 @@
-# Informe 3S · 19/11/2026 14:26
+# Informe 3S · 23/11/2026 18:20
 
 ## Escenario semanal
 
@@ -39,4 +39,25 @@
 
 
 **Barrios con más rapiñas esperadas (2026-12-31):** Malvin Norte (135.5), Peñarol, Lavalleja (132.5), Casavalle (126.0), Colon Centro Y Noroeste (120.8), Union (116.0), Nuevo Paris (105.0), Manga, Toledo Chico (103.8), La Paloma, Tomkinson (100.8), Paso De La Arena (98.8), Pta. Rieles, Bella Italia (84.8)
+
+## Alertas de desvío · 2026Q3
+
+| Tipo | Delito | Barrio | Período | Observado | Esperado | Variación |
+|---|---|---|---|---|---|---|
+| 🔺 Pico | Hurto | Cerrito | 2026-07-27 a 2026-08-02 | 51 | 15.7 | +225.2% |
+| 🔻 Baja sostenida | Hurto | Malvin | 2026-07-06 a 2026-09-27 | 235 | 423.8 | -44.6% |
+| 🔺 Suba sostenida | Hurto | Cerrito | 2026-07-06 a 2026-09-27 | 240 | 160.2 | +49.8% |
+| 🔺 Suba sostenida | Rapiña | Pta. Rieles, Bella Italia | 2026-07-06 a 2026-09-27 | 119 | 63.8 | +86.4% |
+| 🔻 Baja sostenida | Rapiña | Punta Carretas | 2026-07-06 a 2026-09-27 | 12 | 36.7 | -67.3% |
+| 🔻 Baja sostenida | Hurto | Punta Carretas | 2026-07-06 a 2026-09-27 | 200 | 287.7 | -30.5% |
+| 🔻 Baja sostenida | Rapiña | Parque Rodo | 2026-07-13 a 2026-09-27 | 3 | 19.1 | -84.3% |
+| 🔺 Suba sostenida | Hurto | Ituzaingo | 2026-07-06 a 2026-09-27 | 161 | 108.0 | +49.1% |
+| 🔻 Baja sostenida | Hurto | Capurro, Bella Vista | 2026-07-13 a 2026-09-27 | 83 | 132.6 | -37.4% |
+| 🔺 Suba sostenida | Rapiña | Cerro | 2026-07-20 a 2026-09-27 | 68 | 39.1 | +74.0% |
+| 🔻 Baja sostenida | Lesiones | Colon Centro Y Noroeste | 2026-07-27 a 2026-09-27 | 19 | 41.8 | -54.5% |
+| 🔺 Suba sostenida | Hurto | Paso De Las Duranas | 2026-07-06 a 2026-09-27 | 155 | 107.6 | +44.1% |
+| 🔻 Baja sostenida | Hurto | Villa Muñoz, Retiro | 2026-07-20 a 2026-09-27 | 68 | 110.2 | -38.3% |
+| 🔺 Suba sostenida | Rapiña | Casavalle | 2026-07-27 a 2026-09-27 | 117 | 75.0 | +55.9% |
+
+**Validación histórica (42 trimestres):** pico: 73% siguió desviado (2.5 por trimestre) · suba: 76% siguió desviado (9.2 por trimestre) · baja: 88% siguió desviado (6.7 por trimestre). Sin alerta, 47% de los barrios quedó arriba de lo esperable.
 

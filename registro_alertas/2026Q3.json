@@ -1,0 +1,43 @@
+{
+ "trimestre": "2026Q3",
+ "datos_hasta": "2026-09-30",
+ "generado_en": "2026-11-23T18:18:03+00:00",
+ "parametros": {
+  "delitos": [
+   "RAPIÑA",
+   "HURTO",
+   "LESIONES"
+  ],
+  "subas": true,
+  "bajas": true,
+  "falsas_alarmas_por_trimestre": 1.0,
+  "delta_suba": 0.4,
+  "delta_baja": 0.3,
+  "min_esperado_trimestre": 5.0,
+  "simulaciones": 20000,
+  "semilla": 0
+ },
+ "ciudad": [
+  {
+   "delito": "RAPIÑA",
+   "semanas": 12,
+   "barrios_evaluados": 62,
+   "dispersion_k": 16.0,
+   "total": 2753
+  },
+  {
+   "delito": "HURTO",
+   "semanas": 12,
+   "barrios_evaluados": 62,
+   "dispersion_k": 22.5,
+   "total": 11737
+  },
+  {
+   "delito": "LESIONES",
+   "semanas": 12,
+   "barrios_evaluados": 56,
+   "dispersion_k": 195.1,
+   "total": 1046
+  }
+ ]
+}

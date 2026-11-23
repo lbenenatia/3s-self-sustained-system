@@ -1,0 +1,23 @@
+{
+ "trimestres": 42,
+ "sin_alerta_arriba_pct": 47.1,
+ "pico": {
+  "alertas": 105,
+  "por_trimestre": 2.5,
+  "siguio_desviado_pct": 73.3,
+  "razon_media_siguiente": 1.26
+ },
+ "suba": {
+  "alertas": 387,
+  "por_trimestre": 9.2,
+  "siguio_desviado_pct": 76.2,
+  "razon_media_siguiente": 1.26
+ },
+ "baja": {
+  "alertas": 281,
+  "por_trimestre": 6.7,
+  "siguio_desviado_pct": 87.9,
+  "razon_media_siguiente": 0.82
+ },
+ "calculado_en": "2026-11-23T18:20:31+00:00"
+}
