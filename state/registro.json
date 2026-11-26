@@ -281,6 +281,45 @@
       "acierto_top10": 0.5714
      }
     }
+   },
+   {
+    "fecha": "2026-11-26T16:59:12+00:00",
+    "campeon": "clima",
+    "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón",
+    "metricas": {
+     "base_corta": {
+      "error_medio": 1.7934,
+      "acierto_top10": 0.5604
+     },
+     "base_estacional": {
+      "error_medio": 2.558,
+      "acierto_top10": 0.3934
+     },
+     "base": {
+      "error_medio": 1.7707,
+      "acierto_top10": 0.5549
+     },
+     "calendario": {
+      "error_medio": 1.7709,
+      "acierto_top10": 0.5615
+     },
+     "otros": {
+      "error_medio": 1.7735,
+      "acierto_top10": 0.5626
+     },
+     "escalada": {
+      "error_medio": 1.7751,
+      "acierto_top10": 0.556
+     },
+     "territorio": {
+      "error_medio": 1.7628,
+      "acierto_top10": 0.5615
+     },
+     "clima": {
+      "error_medio": 1.76,
+      "acierto_top10": 0.5714
+     }
+    }
    }
   ]
  },
@@ -569,6 +608,45 @@
    },
    {
     "fecha": "2026-11-23T18:17:56+00:00",
+    "campeon": "base_corta",
+    "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón",
+    "metricas": {
+     "base_corta": {
+      "error_medio": 16.5246,
+      "acierto_top10": 0.7774
+     },
+     "base_estacional": {
+      "error_medio": 21.2133,
+      "acierto_top10": 0.6903
+     },
+     "base": {
+      "error_medio": 17.3639,
+      "acierto_top10": 0.7613
+     },
+     "calendario": {
+      "error_medio": 16.3729,
+      "acierto_top10": 0.7806
+     },
+     "otros": {
+      "error_medio": 16.6171,
+      "acierto_top10": 0.7613
+     },
+     "escalada": {
+      "error_medio": 16.6021,
+      "acierto_top10": 0.7613
+     },
+     "territorio": {
+      "error_medio": 16.5347,
+      "acierto_top10": 0.7774
+     },
+     "clima": {
+      "error_medio": 16.5319,
+      "acierto_top10": 0.7871
+     }
+    }
+   },
+   {
+    "fecha": "2026-11-26T17:00:16+00:00",
     "campeon": "base_corta",
     "motivo": "ningún retador mostró una mejora segura: se mantiene el campeón",
     "metricas": {

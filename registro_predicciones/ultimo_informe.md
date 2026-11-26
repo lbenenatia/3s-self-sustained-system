@@ -1,4 +1,4 @@
-# Informe 3S · 23/11/2026 18:20
+# Informe 3S · 26/11/2026 17:00
 
 ## Escenario semanal
 
